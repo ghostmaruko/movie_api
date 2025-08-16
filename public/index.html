@@ -1,0 +1,73 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Movie Gallery</title>
+    <link rel="stylesheet" href="/style.css" />
+  </head>
+  <body>
+    <h1>Movie Gallery</h1>
+    <div class="movie-grid" id="movieGrid"></div>
+
+    <!-- Popup -->
+    <div class="popup" id="popup">
+      <span class="close-btn" id="closePopup">&times;</span>
+      <div class="popup-content">
+        <img id="popupImg" src="" alt="" />
+        <div class="popup-description">
+          <h2 id="popupTitle"></h2>
+          <p id="popupDesc"></p>
+          <p><strong>Genre:</strong> <span id="popupGenre"></span></p>
+          <p><strong>Director:</strong> <span id="popupDirector"></span></p>
+          <p><strong>Year:</strong> <span id="popupYear"></span></p>
+        </div>
+      </div>
+    </div>
+
+    <script>
+      fetch("/movies")
+        .then(res => res.json())
+        .then(movies => {
+          const grid = document.getElementById("movieGrid");
+          movies.forEach(movie => {
+            const card = document.createElement("div");
+            card.classList.add("movie-card");
+            card.innerHTML = `
+              <img src="${movie.imageURL}" alt="${movie.title}">
+              <h3>${movie.title}</h3>
+            `;
+            card.addEventListener("click", () => openPopup(movie));
+            grid.appendChild(card);
+          });
+        });
+
+      const popup = document.getElementById("popup");
+      const popupImg = document.getElementById("popupImg");
+      const popupTitle = document.getElementById("popupTitle");
+      const popupDesc = document.getElementById("popupDesc");
+      const popupGenre = document.getElementById("popupGenre");
+      const popupDirector = document.getElementById("popupDirector");
+      const popupYear = document.getElementById("popupYear");
+      const closePopup = document.getElementById("closePopup");
+
+      function openPopup(movie) {
+        popupImg.src = movie.imageURL;
+        popupTitle.textContent = movie.title;
+        popupDesc.textContent = movie.description;
+        popupGenre.textContent = movie.genre;
+        popupDirector.textContent = movie.director.name;
+        popupYear.textContent = movie.year;
+        popup.style.display = "flex";
+      }
+
+      closePopup.addEventListener("click", () => {
+        popup.style.display = "none";
+      });
+
+      popup.addEventListener("click", e => {
+        if (e.target === popup) popup.style.display = "none";
+      });
+    </script>
+  </body>
+</html>

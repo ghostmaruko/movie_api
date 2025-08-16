@@ -1,10 +1,144 @@
 <!DOCTYPE html>
-<html>
-<head>
-  <title>Movie API Documentation</title>
-</head>
-<body>
-  <h1>Movie API</h1>
-  <p>This API allows users to get information about movies, directors, and genres.</p>
-</body>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Movie API Documentation</title>
+    <style>
+      body {
+        font-family: Arial, sans-serif;
+        padding: 20px;
+      }
+      table {
+        width: 100%;
+        border-collapse: collapse;
+        margin-bottom: 30px;
+      }
+      table,
+      th,
+      td {
+        border: 1px solid #ccc;
+      }
+      th,
+      td {
+        padding: 10px;
+        text-align: left;
+      }
+      th {
+        background-color: #f4f4f4;
+      }
+      h1,
+      h2 {
+        color: #333;
+      }
+    </style>
+  </head>
+  <body>
+    <h1>Movie API Documentation</h1>
+    <p>
+      This API allows users to retrieve movie data, register and manage
+      accounts, and manage favorite movies.
+    </p>
+
+    <h2>Endpoints</h2>
+    <table>
+      <tr>
+        <th>Method</th>
+        <th>URL</th>
+        <th>Description</th>
+        <th>Request Body</th>
+        <th>Response Example</th>
+      </tr>
+
+      <tr>
+        <td>GET</td>
+        <td>/movies</td>
+        <td>Returns a list of all movies</td>
+        <td>None</td>
+        <td>
+          [ { "id": 0, "title": "The Lord of the Rings", "year": 2001, ... },
+          ... ]
+        </td>
+      </tr>
+
+      <tr>
+        <td>GET</td>
+        <td>/movies/:title</td>
+        <td>Returns data about a single movie by title</td>
+        <td>None</td>
+        <td>
+          { "id": 0, "title": "The Lord of the Rings", "year": 2001, ... }
+        </td>
+      </tr>
+
+      <tr>
+        <td>GET</td>
+        <td>/genres/:name</td>
+        <td>Returns the description of a genre by name</td>
+        <td>None</td>
+        <td>{ "genre": "Sci-Fi", "description": "A hacker discovers..." }</td>
+      </tr>
+
+      <tr>
+        <td>GET</td>
+        <td>/directors/:name</td>
+        <td>Returns director details by name</td>
+        <td>None</td>
+        <td>{ "name": "Christopher Nolan", "birth": 1970, "death": null }</td>
+      </tr>
+
+      <tr>
+        <td>POST</td>
+        <td>/users</td>
+        <td>Registers a new user</td>
+        <td>{ "username": "marco" }</td>
+        <td>User marco registered</td>
+      </tr>
+
+      <tr>
+        <td>PUT</td>
+        <td>/users/:username</td>
+        <td>Updates the username</td>
+        <td>{ "newUsername": "marco2" }</td>
+        <td>Username updated to marco2</td>
+      </tr>
+
+      <tr>
+        <td>POST</td>
+        <td>/users/:username/movies/:movieID</td>
+        <td>Adds a movie to user's favorites</td>
+        <td>None</td>
+        <td>Movie Inception added to marco's favorites</td>
+      </tr>
+
+      <tr>
+        <td>DELETE</td>
+        <td>/users/:username/movies/:movieID</td>
+        <td>Removes a movie from user's favorites</td>
+        <td>None</td>
+        <td>Movie 2 removed from marco's favorites</td>
+      </tr>
+
+      <tr>
+        <td>DELETE</td>
+        <td>/users/:username</td>
+        <td>Deletes a user account</td>
+        <td>None</td>
+        <td>User marco has been removed</td>
+      </tr>
+    </table>
+
+    <h2>Notes</h2>
+    <ul>
+      <li>All responses are in JSON format unless otherwise specified.</li>
+      <li>
+        The <code>imageURL</code> field can be a local path (from
+        <code>/public/img</code>) or an external URL.
+      </li>
+      <li>
+        For POST and PUT requests, set <strong>Content-Type</strong> to
+        <code>application/json</code>.
+      </li>
+    </ul>
+  </body>
 </html>
