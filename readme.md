@@ -76,10 +76,34 @@ HTML + CSS (Vanilla frontend)
 Postman (for testing)
 
 ## Notes
+- Movies and users are stored in-memory (no DB).
+- This is a backend project prepared for future MongoDB integration.
 
-Movies and users are stored in-memory (no DB).
+# Movie App Database – SQL Task
 
-This is a backend project prepared for future MongoDB integration.
+## Contents of this submission:
+
+1. part1_db.sql  
+   → SQL script to drop, create and populate the database with:
+   - Genres, Directors, Movies, Users, User-Movie (favorites) relationships
+   - At least 10 movies, 3 directors, 3 genres, 3 users, 3 favorites
+
+2. parte2_queries.sql  
+   → SQL queries for:
+   - Selecting a genre and its related movies
+   - Updating a user’s email
+   - Deleting a movie (with checks before and after)
+
+3. Screenshots (PNG)  
+   → Query results for each required operation in Part 2:
+   - SELECT (genre and movies)
+   - UPDATE (user email)
+   - DELETE (with before/after checks)
+
+## Notes:
+- The database has been tested in pgAdmin without errors.
+- Data used is fictional and aligned with the project brief requirements.
+
 
 ## Author
 
