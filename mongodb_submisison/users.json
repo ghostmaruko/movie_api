@@ -1,0 +1,37 @@
+[
+  {
+    "username": "mariorossi",
+    "password": "pass1234",
+    "email": "mario.rossi@email.com",
+    "birthday": "1990-05-10T00:00:00Z",
+    "favorites": ["c4ca4238a0b923820dcc509a6f75849b", "eccbc87e4b5ce2fe28308fd9f2a7baf3"]
+  },
+  {
+    "username": "giuliabianchi",
+    "password": "giulia88",
+    "email": "giulia.bianchi@email.com",
+    "birthday": "1988-11-22T00:00:00Z",
+    "favorites": ["a87ff679a2f3e71d9181a67b7542122c"]
+  },
+  {
+    "username": "andreapetro",
+    "password": "andrea_pw",
+    "email": "andrea.petro@email.com",
+    "birthday": "1995-03-15T00:00:00Z",
+    "favorites": []
+  },
+  {
+    "username": "simoneneri",
+    "password": "simonepass",
+    "email": "simone.neri@email.com",
+    "birthday": "1983-06-02T00:00:00Z",
+    "favorites": []
+  },
+  {
+    "username": "laurarossi",
+    "password": "laura_pass",
+    "email": "laura.rossi@email.com",
+    "birthday": "1992-08-25T00:00:00Z",
+    "favorites": []
+  }
+]

@@ -1,0 +1,142 @@
+[
+  {
+    "_id": "c4ca4238a0b923820dcc509a6f75849b",
+    "title": "The Lord of the Rings",
+    "description": "Epic fantasy adventure based on the novel by J.R.R. Tolkien.",
+    "genre": { "name": "Fantasy", "description": "Fantasy movies" },
+    "director": {
+      "name": "Peter Jackson",
+      "bio": "Peter Jackson is a well-known director.",
+      "birthYear": "1961-01-01",
+      "deathYear": null
+    },
+    "imageURL": "lotr.jpg",
+    "featured": true
+  },
+  {
+    "_id": "c81e728d9d4c2f636f067f89cc14862c",
+    "title": "The Matrix",
+    "description": "A hacker discovers the shocking truth about reality.",
+    "genre": { "name": "Sci-Fi", "description": "Sci-Fi movies" },
+    "director": {
+      "name": "Lana Wachowski",
+      "bio": "Lana Wachowski is a well-known director.",
+      "birthYear": "1965-01-01",
+      "deathYear": null
+    },
+    "imageURL": "matrix.jpg",
+    "featured": true
+  },
+  {
+    "_id": "eccbc87e4b5ce2fe28308fd9f2a7baf3",
+    "title": "Inception",
+    "description": "A skilled thief enters dreams to steal secrets.",
+    "genre": { "name": "Sci-Fi", "description": "Sci-Fi movies" },
+    "director": {
+      "name": "Christopher Nolan",
+      "bio": "Christopher Nolan is a well-known director.",
+      "birthYear": "1970-01-01",
+      "deathYear": null
+    },
+    "imageURL": "inception.jpg",
+    "featured": false
+  },
+  {
+    "_id": "a87ff679a2f3e71d9181a67b7542122c",
+    "title": "Star Wars: A New Hope",
+    "description": "A young farmer joins a rebellion against an evil empire.",
+    "genre": { "name": "Sci-Fi", "description": "Sci-Fi movies" },
+    "director": {
+      "name": "George Lucas",
+      "bio": "George Lucas is a well-known director.",
+      "birthYear": "1944-01-01",
+      "deathYear": null
+    },
+    "imageURL": "star_wars.jpg",
+    "featured": true
+  },
+  {
+    "_id": "e4da3b7fbbce2345d7772b0674a318d5",
+    "title": "Pulp Fiction",
+    "description": "A series of interconnected stories set in the criminal underworld of Los Angeles.",
+    "genre": { "name": "Crime", "description": "Crime movies" },
+    "director": {
+      "name": "Quentin Tarantino",
+      "bio": "Quentin Tarantino is a well-known director.",
+      "birthYear": "1963-01-01",
+      "deathYear": null
+    },
+    "imageURL": "pupl_fiction.jpg",
+    "featured": false
+  },
+  {
+    "_id": "1679091c5a880faf6fb5e6087eb1b2dc",
+    "title": "The Godfather",
+    "description": "The aging patriarch of an organized crime dynasty transfers control to his reluctant son.",
+    "genre": { "name": "Crime", "description": "Crime movies" },
+    "director": {
+      "name": "Francis Ford Coppola",
+      "bio": "Francis Ford Coppola is a well-known director.",
+      "birthYear": "1939-01-01",
+      "deathYear": null
+    },
+    "imageURL": "The_Godfather.jpg",
+    "featured": false
+  },
+  {
+    "_id": "8f14e45fceea167a5a36dedd4bea2543",
+    "title": "Forrest Gump",
+    "description": "The presidencies of Kennedy and Johnson... through the perspective of Forrest Gump.",
+    "genre": { "name": "Drama", "description": "Drama movies" },
+    "director": {
+      "name": "Robert Zemeckis",
+      "bio": "Robert Zemeckis is a well-known director.",
+      "birthYear": "1951-01-01",
+      "deathYear": null
+    },
+    "imageURL": "forrest_gumps.jpg",
+    "featured": false
+  },
+  {
+    "_id": "c9f0f895fb98ab9159f51fd0297e236d",
+    "title": "The Dark Knight",
+    "description": "The Joker wreaks havoc and chaos on the people of Gotham.",
+    "genre": { "name": "Action", "description": "Action movies" },
+    "director": {
+      "name": "Christopher Nolan",
+      "bio": "Christopher Nolan is a well-known director.",
+      "birthYear": "1970-01-01",
+      "deathYear": null
+    },
+    "imageURL": "the_dark_knight.jpg",
+    "featured": false
+  },
+  {
+    "_id": "45c48cce2e2d7fbdea1afc51c7c6ad26",
+    "title": "Interstellar",
+    "description": "Explorers travel through a wormhole to ensure humanity's survival.",
+    "genre": { "name": "Sci-Fi", "description": "Sci-Fi movies" },
+    "director": {
+      "name": "Christopher Nolan",
+      "bio": "Christopher Nolan is a well-known director.",
+      "birthYear": "1970-01-01",
+      "deathYear": null
+    },
+    "imageURL": "interstellar.jpg",
+    "featured": false
+  },
+  {
+    "_id": "d3d9446802a44259755d38e6d163e820",
+    "title": "Gladiator",
+    "description": "A Roman General seeks vengeance against a corrupt emperor.",
+    "genre": { "name": "Action", "description": "Action movies" },
+    "director": {
+      "name": "Ridley Scott",
+      "bio": "Ridley Scott is a well-known director.",
+      "birthYear": "1937-01-01",
+      "deathYear": null
+    },
+    "imageURL": "gladiator.jpg",
+    "featured": false
+  }
+]
