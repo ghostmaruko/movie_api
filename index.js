@@ -1,3 +1,19 @@
+// Movie API - index.js
+// This file sets up the Express server and defines the API endpoints for the movie database.
+const mongoose = require("mongoose");
+// Importing the models
+// Ensure the path is correct based on your project structure
+const Models = require(".//moongose/model.js");
+
+const Movie = Models.Movie;
+const User = Models.User;
+
+// Connect to MongoDB
+mongoose.connect("mongodb://localhost:27017/movie_api", {
+  useNewUrlParser: true,
+  useUnifiedTopology: true,
+});
+
 const express = require("express");
 const morgan = require("morgan");
 const app = express();
