@@ -193,7 +193,7 @@ app.get("/directors/:name", (req, res) => {
 });
 
 // 5. Registrazione nuovo utente
-app.post("/users", (req, res) => {
+/* app.post("/users", (req, res) => {
   const { username } = req.body;
   if (!username) return res.status(400).send("Username is required");
   if (users.find((u) => u.username === username))
@@ -201,6 +201,36 @@ app.post("/users", (req, res) => {
 
   users.push({ username, favorites: [] });
   res.status(201).send(`User ${username} registered`);
+}); */
+
+//5. Registrazione nuovo utente, salva i dati nel DB MongoDB
+app.post("/users", async (req, res) => {
+  await users
+    .findOne({ Username: req.body.Username })
+    .then((user) => {
+      if (user) {
+        return res.status(400).send(req.body.Username + "Already exists");
+      } else {
+        users
+          .create({
+            Username: req.body.Username,
+            Password: req.body.Password,
+            Email: req.body.Email,
+            Birthday: req.body.Birthday,
+          })
+          .then((user) => {
+            res.status(201).json(user);
+          })
+          .catch((error) => {
+            console.error(error);
+            res.status(500).send("Error: " + error);
+          });
+      }
+    })
+    .catch((error) => {
+      console.error(error);
+      res.status(500).send("Error + " + error);
+    });
 });
 
 // 6. Aggiornare username
