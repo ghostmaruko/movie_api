@@ -3,266 +3,160 @@
 
 const mongoose = require("mongoose");
 // Importing the models
-// Ensure the path is correct based on your project structure
 const Models = require("./moongose/model.js");
-
 const Movie = Models.Movie;
 const User = Models.User;
 
-// Connect to MongoDB
-/* mongoose.connect("mongodb://localhost:27017/movie_api", {
-  useNewUrlParser: true,
-  useUnifiedTopology: true,
-}); */
-mongoose.connect("mongodb://localhost:27017/movie_api");
-
 const express = require("express");
 const morgan = require("morgan");
-const app = express();
 const path = require("path");
+const app = express();
 
+// Connect to MongoDB
+mongoose.connect("mongodb://localhost:27017/movie_api", {
+  useNewUrlParser: true,
+  useUnifiedTopology: true,
+});
+
+// Middleware
 app.use(morgan("common"));
 app.use(express.json()); // per leggere i body JSON
 app.use(express.static("public"));
 
-// === Dati fittizi (in-memory) ===
-let topMovies = [
-  {
-    id: 0,
-    title: "The Lord of the Rings",
-    year: 2001,
-    description: "Epic fantasy adventure based on the novel by J.R.R. Tolkien.",
-    genre: "Fantasy",
-    director: { name: "Peter Jackson", birth: 1961, death: null },
-    imageURL: "/img/lotr.jpg",
-    featured: true,
-  },
-  {
-    id: 1,
-    title: "The Matrix",
-    year: 1999,
-    description: "A hacker discovers the shocking truth about reality.",
-    genre: "Sci-Fi",
-    director: { name: "Lana Wachowski", birth: 1965, death: null },
-    imageURL: "/img/matrix.jpg",
-    featured: true,
-  },
-  {
-    id: 2,
-    title: "Inception",
-    year: 2010,
-    description: "A skilled thief enters dreams to steal secrets.",
-    genre: "Sci-Fi",
-    director: { name: "Christopher Nolan", birth: 1970, death: null },
-    imageURL: "/img/inception.jpg",
-    featured: false,
-  },
-  {
-    id: 3,
-    title: "Star Wars: A New Hope",
-    year: 1977,
-    description: "A young farmer joins a rebellion against an evil empire.",
-    genre: "Sci-Fi",
-    director: { name: "George Lucas", birth: 1944, death: null },
-    imageURL: "/img/star_wars.jpg",
-    featured: true,
-  },
-  {
-    id: 4,
-    title: "Pulp Fiction",
-    year: 1994,
-    description:
-      "A series of interconnected stories set in the criminal underworld of Los Angeles.",
-    genre: "Crime",
-    director: { name: "Quentin Tarantino", birth: 1963, death: null },
-    imageURL: "/img/pupl_fiction.jpg",
-    featured: false,
-  },
-  {
-    id: 5,
-    title: "The Godfather",
-    year: 1972,
-    description:
-      "The aging patriarch of an organized crime dynasty transfers control to his reluctant son.",
-    genre: "Crime",
-    director: { name: "Francis Ford Coppola", birth: 1939, death: null },
-    imageURL: "/img/The_Godfather.jpg",
-    featured: false,
-  },
-  {
-    id: 6,
-    title: "Forrest Gump",
-    year: 1994,
-    description:
-      "The presidencies of Kennedy and Johnson, the Vietnam War, the Watergate scandal, and other historical events unfold through the perspective of an Alabamaan named Forrest Gump.",
-    genre: "Drama",
-    director: { name: "Robert Zemeckis", birth: 1951, death: null },
-    imageURL: "/img/forrest_gumps.jpg",
-    featured: false,
-  },
-  {
-    id: 7,
-    title: "The Dark Knight",
-    year: 2008,
-    description:
-      "When the menace known as the Joker emerges from his mysterious past, he wreaks havoc and chaos on the people of Gotham.",
-    genre: "Action",
-    director: { name: "Christopher Nolan", birth: 1970, death: null },
-    imageURL: "/img/the_dark_knight.jpg",
-    featured: false,
-  },
-  {
-    id: 8,
-    title: "Interstellar",
-    year: 2014,
-    description:
-      "A team of explorers travel through a wormhole in space in an attempt to ensure humanity's survival.",
-    genre: "Sci-Fi",
-    director: { name: "Christopher Nolan", birth: 1970, death: null },
-    imageURL: "/img/interstellar.jpg",
-    featured: false,
-  },
-  {
-    id: 9,
-    title: "Gladiator",
-    year: 2000,
-    description:
-      "A former Roman General sets out to exact vengeance against the corrupt emperor who murdered his family and sent him to be a gladiator.",
-    genre: "Action",
-    director: { name: "Ridley Scott", birth: 1937, death: null },
-    imageURL: "/img/gladiator.jpg",
-    featured: false,
-  },
-  {
-    id: 10,
-    title: "The Silence of the Lambs",
-    year: 1991,
-    description:
-      "A young FBI cadet must confide in an incarcerated and manipulative killer to receive his help on catching another serial killer.",
-    genre: "Thriller",
-    director: { name: "Jonathan Demme", birth: 1944, death: 2017 },
-    imageURL: "/img/silcence_of_lambs.jpg",
-    featured: false,
-  },
-];
 
-/* let users = [
-  { username: "marco", favorites: [] },
-  { username: "anna", favorites: [] },
-]; */
-
-// === Rotte richieste dalla task ===
-
-// Root
-/* app.get("/", (req, res) => {
-  res.send("Welcome to the Movie API!");
-}); */
+// === Rotte API MongoDB ===
 
 // 1. Lista di tutti i film
-app.get("/movies", (req, res) => {
-  res.json(topMovies);
+app.get("/movies", async (req, res) => {
+  try {
+    const movies = await Movie.find();
+    res.json(movies);
+  } catch (err) {
+    res.status(500).send("Error: " + err);
+  }
 });
 
 // 2. Dati di un film per titolo
-app.get("/movies/:title", (req, res) => {
-  const movie = topMovies.find((m) => m.title === req.params.title);
-  if (movie) res.json(movie);
-  else res.status(404).send("Movie not found");
+app.get("/movies/:title", async (req, res) => {
+  try {
+    const movie = await Movie.findOne({ title: req.params.title });
+    if (!movie) return res.status(404).send("Movie not found");
+    res.json(movie);
+  } catch (err) {
+    res.status(500).send("Error: " + err);
+  }
 });
 
 // 3. Dati di un genere per nome
-app.get("/genres/:name", (req, res) => {
-  const movie = topMovies.find(
-    (m) => m.genre.toLowerCase() === req.params.name.toLowerCase()
-  );
-  if (movie) {
+app.get("/genres/:name", async (req, res) => {
+  try {
+    const movie = await Movie.findOne({ genre: req.params.name });
+    if (!movie) return res.status(404).send("Genre not found");
     res.json({ genre: movie.genre, description: movie.description });
-  } else {
-    res.status(404).send("Genre not found");
+  } catch (err) {
+    res.status(500).send("Error: " + err);
   }
 });
 
 // 4. Dati di un regista per nome
-app.get("/directors/:name", (req, res) => {
-  const movie = topMovies.find(
-    (m) => m.director.name.toLowerCase() === req.params.name.toLowerCase()
-  );
-  if (movie) {
+app.get("/directors/:name", async (req, res) => {
+  try {
+    const movie = await Movie.findOne({ "director.name": req.params.name });
+    if (!movie) return res.status(404).send("Director not found");
     res.json(movie.director);
-  } else {
-    res.status(404).send("Director not found");
+  } catch (err) {
+    res.status(500).send("Error: " + err);
   }
 });
 
-// 5. Registrazione nuovo utente, salva i dati nel DB MongoDB
+// 5. Registrazione nuovo utente
 app.post("/users", async (req, res) => {
-  await User.findOne({ Username: req.body.Username })
-    .then((user) => {
-      if (user) {
-        return res.status(400).send(`${req.body.Username} already exists`);
-      } else {
-        User.create({
-          Username: req.body.Username,
-          Password: req.body.Password,
-          Email: req.body.Email,
-          Birthday: req.body.Birthday,
-        })
-          .then((user) => {
-            res.status(201).json(user);
-          })
-          .catch((error) => {
-            console.error(error);
-            res.status(500).send("Error: " + error);
-          });
-      }
-    })
-    .catch((error) => {
-      console.error(error);
-      res.status(500).send("Error: " + error);
-    });
+  try {
+    const existingUser = await User.findOne({ Username: req.body.Username });
+    if (existingUser) return res.status(400).send(`${req.body.Username} already exists`);
+
+    const newUser = await User.create(req.body);
+    res.status(201).json(newUser);
+  } catch (err) {
+    res.status(500).send("Error: " + err);
+  }
 });
 
-// 6. Aggiornare username
-app.put("/users/:username", (req, res) => {
-  const user = users.find((u) => u.username === req.params.username);
-  if (!user) return res.status(404).send("User not found");
-
-  const { newUsername } = req.body;
-  if (!newUsername) return res.status(400).send("New username is required");
-
-  user.username = newUsername;
-  res.send(`Username updated to ${newUsername}`);
+// 6. Aggiornare utente
+app.put("/users/:Username", async (req, res) => {
+  try {
+    const updatedUser = await User.findOneAndUpdate(
+      { Username: req.params.Username },
+      { $set: req.body },
+      { new: true }
+    );
+    if (!updatedUser) return res.status(404).send("User not found");
+    res.json(updatedUser);
+  } catch (err) {
+    res.status(500).send("Error: " + err);
+  }
 });
 
 // 7. Aggiungere un film ai preferiti
-app.post("/users/:username/movies/:movieID", (req, res) => {
-  const user = users.find((u) => u.username === req.params.username);
-  if (!user) return res.status(404).send("User not found");
-
-  const movie = topMovies.find((m) => m.id == req.params.movieID);
-  if (!movie) return res.status(404).send("Movie not found");
-
-  if (!user.favorites.includes(movie.id)) {
-    user.favorites.push(movie.id);
+app.post("/users/:Username/movies/:MovieID", async (req, res) => {
+  try {
+    const updatedUser = await User.findOneAndUpdate(
+      { Username: req.params.Username },
+      { $addToSet: { FavoriteMovies: req.params.MovieID } },
+      { new: true }
+    );
+    if (!updatedUser) return res.status(404).send("User not found");
+    res.json(updatedUser);
+  } catch (err) {
+    res.status(500).send("Error: " + err);
   }
-  res.send(`Movie ${movie.title} added to ${user.username}'s favorites`);
 });
 
 // 8. Rimuovere un film dai preferiti
-app.delete("/users/:username/movies/:movieID", (req, res) => {
-  const user = users.find((u) => u.username === req.params.username);
-  if (!user) return res.status(404).send("User not found");
-
-  user.favorites = user.favorites.filter((id) => id != req.params.movieID);
-  res.send(
-    `Movie ${req.params.movieID} removed from ${user.username}'s favorites`
-  );
+app.delete("/users/:Username/movies/:MovieID", async (req, res) => {
+  try {
+    const updatedUser = await User.findOneAndUpdate(
+      { Username: req.params.Username },
+      { $pull: { FavoriteMovies: req.params.MovieID } },
+      { new: true }
+    );
+    if (!updatedUser) return res.status(404).send("User not found");
+    res.json(updatedUser);
+  } catch (err) {
+    res.status(500).send("Error: " + err);
+  }
 });
 
 // 9. Cancellare utente
-app.delete("/users/:username", (req, res) => {
-  users = users.filter((u) => u.username !== req.params.username);
-  res.send(`User ${req.params.username} has been removed`);
+app.delete("/users/:Username", async (req, res) => {
+  try {
+    const user = await User.findOneAndRemove({ Username: req.params.Username });
+    if (!user) return res.status(404).send("User not found");
+    res.send(`${req.params.Username} was deleted.`);
+  } catch (err) {
+    res.status(500).send("Error: " + err);
+  }
+});
+
+// 10. Read all users
+app.get("/users", async (req, res) => {
+  try {
+    const users = await User.find();
+    res.json(users);
+  } catch (err) {
+    res.status(500).send("Error: " + err);
+  }
+});
+
+// 11. Read a specific user
+app.get("/users/:Username", async (req, res) => {
+  try {
+    const user = await User.findOne({ Username: req.params.Username });
+    if (!user) return res.status(404).send("User not found");
+    res.json(user);
+  } catch (err) {
+    res.status(500).send("Error: " + err);
+  }
 });
 
 // === PAGINE HTML ===

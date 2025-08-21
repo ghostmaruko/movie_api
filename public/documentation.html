@@ -1,3 +1,4 @@
+
 <!DOCTYPE html>
 <html lang="en">
   <head>
@@ -14,31 +15,24 @@
         border-collapse: collapse;
         margin-bottom: 30px;
       }
-      table,
-      th,
-      td {
+      table, th, td {
         border: 1px solid #ccc;
       }
-      th,
-      td {
+      th, td {
         padding: 10px;
         text-align: left;
       }
       th {
         background-color: #f4f4f4;
       }
-      h1,
-      h2 {
+      h1, h2 {
         color: #333;
       }
     </style>
   </head>
   <body>
     <h1>Movie API Documentation</h1>
-    <p>
-      This API allows users to retrieve movie data, register and manage
-      accounts, and manage favorite movies.
-    </p>
+    <p>This API allows users to retrieve movie data, register and manage accounts, and manage favorite movies.</p>
 
     <h2>Endpoints</h2>
     <table>
@@ -56,8 +50,7 @@
         <td>Returns a list of all movies</td>
         <td>None</td>
         <td>
-          [ { "id": 0, "title": "The Lord of the Rings", "year": 2001, ... },
-          ... ]
+          [ { "Title": "The Lord of the Rings", "Year": 2001, ... }, ... ]
         </td>
       </tr>
 
@@ -67,7 +60,7 @@
         <td>Returns data about a single movie by title</td>
         <td>None</td>
         <td>
-          { "id": 0, "title": "The Lord of the Rings", "year": 2001, ... }
+          { "Title": "The Lord of the Rings", "Year": 2001, ... }
         </td>
       </tr>
 
@@ -76,7 +69,7 @@
         <td>/genres/:name</td>
         <td>Returns the description of a genre by name</td>
         <td>None</td>
-        <td>{ "genre": "Sci-Fi", "description": "A hacker discovers..." }</td>
+        <td>{ "Genre": "Sci-Fi", "Description": "A hacker discovers..." }</td>
       </tr>
 
       <tr>
@@ -84,23 +77,23 @@
         <td>/directors/:name</td>
         <td>Returns director details by name</td>
         <td>None</td>
-        <td>{ "name": "Christopher Nolan", "birth": 1970, "death": null }</td>
+        <td>{ "Name": "Christopher Nolan", "Bio": "...", "Birth": 1970 }</td>
       </tr>
 
       <tr>
         <td>POST</td>
         <td>/users</td>
         <td>Registers a new user</td>
-        <td>{ "username": "marco" }</td>
+        <td>{ "Username": "marco", "Password": "12345", "Email": "email@example.com" }</td>
         <td>User marco registered</td>
       </tr>
 
       <tr>
         <td>PUT</td>
         <td>/users/:username</td>
-        <td>Updates the username</td>
-        <td>{ "newUsername": "marco2" }</td>
-        <td>Username updated to marco2</td>
+        <td>Updates the user data</td>
+        <td>{ "Username": "marco2", "Password": "67890", "Email": "new@example.com" }</td>
+        <td>User updated</td>
       </tr>
 
       <tr>
@@ -116,7 +109,7 @@
         <td>/users/:username/movies/:movieID</td>
         <td>Removes a movie from user's favorites</td>
         <td>None</td>
-        <td>Movie 2 removed from marco's favorites</td>
+        <td>Movie removed from marco's favorites</td>
       </tr>
 
       <tr>
@@ -132,13 +125,12 @@
     <ul>
       <li>All responses are in JSON format unless otherwise specified.</li>
       <li>
-        The <code>imageURL</code> field can be a local path (from
-        <code>/public/img</code>) or an external URL.
+        The <code>ImagePath</code> field points to files in the <code>/public/img</code> folder.
       </li>
       <li>
-        For POST and PUT requests, set <strong>Content-Type</strong> to
-        <code>application/json</code>.
+        For POST and PUT requests, set <strong>Content-Type</strong> to <code>application/json</code>.
       </li>
+      <li>Movie fields include: <code>Title</code>, <code>Description</code>, <code>Genre</code>, <code>Director</code>, <code>Year</code>, <code>Actors</code>, <code>ImagePath</code>, <code>Featured</code>.</li>
     </ul>
   </body>
 </html>

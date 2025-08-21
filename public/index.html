@@ -27,14 +27,14 @@
 
     <script>
       fetch("/movies")
-        .then(res => res.json())
-        .then(movies => {
+        .then((res) => res.json())
+        .then((movies) => {
           const grid = document.getElementById("movieGrid");
-          movies.forEach(movie => {
+          movies.forEach((movie) => {
             const card = document.createElement("div");
             card.classList.add("movie-card");
             card.innerHTML = `
-              <img src="${movie.imageURL}" alt="${movie.title}">
+              <img src="${movie.ImagePath}" alt="${movie.Title}">
               <h3>${movie.title}</h3>
             `;
             card.addEventListener("click", () => openPopup(movie));
@@ -52,12 +52,14 @@
       const closePopup = document.getElementById("closePopup");
 
       function openPopup(movie) {
-        popupImg.src = movie.imageURL;
-        popupTitle.textContent = movie.title;
-        popupDesc.textContent = movie.description;
-        popupGenre.textContent = movie.genre;
-        popupDirector.textContent = movie.director.name;
-        popupYear.textContent = movie.year;
+        popupImg.src = movie.ImagePath;
+        popupTitle.textContent = movie.Title;
+        popupDesc.textContent = movie.Description;
+        popupGenre.textContent = movie.Genre?.Name || "N/A";
+        popupDirector.textContent = movie.Director?.Name || "N/A";
+        popupYear.textContent = Array.isArray(movie.Year)
+          ? movie.Year.join(", ")
+          : movie.Year || "N/A";
         popup.style.display = "flex";
       }
 
@@ -65,7 +67,7 @@
         popup.style.display = "none";
       });
 
-      popup.addEventListener("click", e => {
+      popup.addEventListener("click", (e) => {
         if (e.target === popup) popup.style.display = "none";
       });
     </script>
