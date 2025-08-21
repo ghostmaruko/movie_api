@@ -1,18 +1,20 @@
 // Movie API - index.js
 // This file sets up the Express server and defines the API endpoints for the movie database.
+
 const mongoose = require("mongoose");
 // Importing the models
 // Ensure the path is correct based on your project structure
-const Models = require(".//moongose/model.js");
+const Models = require("./moongose/model.js");
 
 const Movie = Models.Movie;
 const User = Models.User;
 
 // Connect to MongoDB
-mongoose.connect("mongodb://localhost:27017/movie_api", {
+/* mongoose.connect("mongodb://localhost:27017/movie_api", {
   useNewUrlParser: true,
   useUnifiedTopology: true,
-});
+}); */
+mongoose.connect("mongodb://localhost:27017/movie_api");
 
 const express = require("express");
 const morgan = require("morgan");
@@ -144,10 +146,10 @@ let topMovies = [
   },
 ];
 
-let users = [
+/* let users = [
   { username: "marco", favorites: [] },
   { username: "anna", favorites: [] },
-];
+]; */
 
 // === Rotte richieste dalla task ===
 
@@ -192,32 +194,19 @@ app.get("/directors/:name", (req, res) => {
   }
 });
 
-// 5. Registrazione nuovo utente
-/* app.post("/users", (req, res) => {
-  const { username } = req.body;
-  if (!username) return res.status(400).send("Username is required");
-  if (users.find((u) => u.username === username))
-    return res.status(400).send("Username already exists");
-
-  users.push({ username, favorites: [] });
-  res.status(201).send(`User ${username} registered`);
-}); */
-
-//5. Registrazione nuovo utente, salva i dati nel DB MongoDB
+// 5. Registrazione nuovo utente, salva i dati nel DB MongoDB
 app.post("/users", async (req, res) => {
-  await users
-    .findOne({ Username: req.body.Username })
+  await User.findOne({ Username: req.body.Username })
     .then((user) => {
       if (user) {
-        return res.status(400).send(req.body.Username + "Already exists");
+        return res.status(400).send(`${req.body.Username} already exists`);
       } else {
-        users
-          .create({
-            Username: req.body.Username,
-            Password: req.body.Password,
-            Email: req.body.Email,
-            Birthday: req.body.Birthday,
-          })
+        User.create({
+          Username: req.body.Username,
+          Password: req.body.Password,
+          Email: req.body.Email,
+          Birthday: req.body.Birthday,
+        })
           .then((user) => {
             res.status(201).json(user);
           })
@@ -229,7 +218,7 @@ app.post("/users", async (req, res) => {
     })
     .catch((error) => {
       console.error(error);
-      res.status(500).send("Error + " + error);
+      res.status(500).send("Error: " + error);
     });
 });
 
