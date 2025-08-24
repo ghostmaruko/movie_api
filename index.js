@@ -1,33 +1,52 @@
-// Movie API - index.js
-// This file sets up the Express server and defines the API endpoints for the movie database.
-
+// =================== IMPORTS ===================
+const express = require("express");
 const mongoose = require("mongoose");
-// Importing the models
+const path = require("path");
+const bcrypt = require("bcryptjs");
+const { passport } = require("./passport");
 const Models = require("./moongose/model.js");
+
 const Movie = Models.Movie;
 const User = Models.User;
 
-const express = require("express");
-const morgan = require("morgan");
-const path = require("path");
+// =================== APP ===================
 const app = express();
 
-// Connect to MongoDB
+// =================== DATABASE ===================
 mongoose.connect("mongodb://localhost:27017/movie_api", {
   useNewUrlParser: true,
   useUnifiedTopology: true,
 });
 
-// Middleware
-app.use(morgan("common"));
-app.use(express.json()); // per leggere i body JSON
+// =================== MIDDLEWARE ===================
+app.use(express.json());
+app.use(passport.initialize());
 app.use(express.static("public"));
 
+// =================== LOGIN ===================
+require("./auth")(app);
 
-// === Rotte API MongoDB ===
+// =================== ROUTES ===================
 
-// 1. Lista di tutti i film
-app.get("/movies", async (req, res) => {
+// ===== 1. Registrazione nuovo utente (pubblica) =====
+app.post("/users", async (req, res) => {
+  try {
+    const existingUser = await User.findOne({ Username: req.body.Username });
+    if (existingUser)
+      return res.status(400).send(`${req.body.Username} already exists`);
+
+    // Hash della password
+    req.body.Password = await bcrypt.hash(req.body.Password, 10);
+
+    const newUser = await User.create(req.body);
+    res.status(201).json(newUser);
+  } catch (err) {
+    res.status(500).send("Error: " + err);
+  }
+});
+
+// ===== 2. Ottieni tutti i film (protetto) =====
+app.get("/movies", passport.authenticate("jwt", { session: false }), async (req, res) => {
   try {
     const movies = await Movie.find();
     res.json(movies);
@@ -36,8 +55,8 @@ app.get("/movies", async (req, res) => {
   }
 });
 
-// 2. Dati di un film per titolo
-app.get("/movies/:title", async (req, res) => {
+// ===== 3. Ottieni film per titolo (protetto) =====
+app.get("/movies/:title", passport.authenticate("jwt", { session: false }), async (req, res) => {
   try {
     const movie = await Movie.findOne({ title: req.params.title });
     if (!movie) return res.status(404).send("Movie not found");
@@ -47,19 +66,19 @@ app.get("/movies/:title", async (req, res) => {
   }
 });
 
-// 3. Dati di un genere per nome
-app.get("/genres/:name", async (req, res) => {
+// ===== 4. Ottieni genere per nome (protetto) =====
+app.get("/genres/:name", passport.authenticate("jwt", { session: false }), async (req, res) => {
   try {
-    const movie = await Movie.findOne({ genre: req.params.name });
+    const movie = await Movie.findOne({ "genre.name": req.params.name });
     if (!movie) return res.status(404).send("Genre not found");
-    res.json({ genre: movie.genre, description: movie.description });
+    res.json(movie.genre);
   } catch (err) {
     res.status(500).send("Error: " + err);
   }
 });
 
-// 4. Dati di un regista per nome
-app.get("/directors/:name", async (req, res) => {
+// ===== 5. Ottieni regista per nome (protetto) =====
+app.get("/directors/:name", passport.authenticate("jwt", { session: false }), async (req, res) => {
   try {
     const movie = await Movie.findOne({ "director.name": req.params.name });
     if (!movie) return res.status(404).send("Director not found");
@@ -69,22 +88,17 @@ app.get("/directors/:name", async (req, res) => {
   }
 });
 
-// 5. Registrazione nuovo utente
-app.post("/users", async (req, res) => {
-  try {
-    const existingUser = await User.findOne({ Username: req.body.Username });
-    if (existingUser) return res.status(400).send(`${req.body.Username} already exists`);
-
-    const newUser = await User.create(req.body);
-    res.status(201).json(newUser);
-  } catch (err) {
-    res.status(500).send("Error: " + err);
+// ===== 6. Aggiorna utente (protetto + verifica identità) =====
+app.put("/users/:Username", passport.authenticate("jwt", { session: false }), async (req, res) => {
+  if (req.user.Username !== req.params.Username) {
+    return res.status(400).send("Permission denied");
   }
-});
 
-// 6. Aggiornare utente
-app.put("/users/:Username", async (req, res) => {
   try {
+    if (req.body.Password) {
+      req.body.Password = await bcrypt.hash(req.body.Password, 10);
+    }
+
     const updatedUser = await User.findOneAndUpdate(
       { Username: req.params.Username },
       { $set: req.body },
@@ -97,8 +111,10 @@ app.put("/users/:Username", async (req, res) => {
   }
 });
 
-// 7. Aggiungere un film ai preferiti
-app.post("/users/:Username/movies/:MovieID", async (req, res) => {
+// ===== 7. Aggiungi film ai preferiti (protetto + verifica) =====
+app.post("/users/:Username/movies/:MovieID", passport.authenticate("jwt", { session: false }), async (req, res) => {
+  if (req.user.Username !== req.params.Username) return res.status(400).send("Permission denied");
+
   try {
     const updatedUser = await User.findOneAndUpdate(
       { Username: req.params.Username },
@@ -112,8 +128,10 @@ app.post("/users/:Username/movies/:MovieID", async (req, res) => {
   }
 });
 
-// 8. Rimuovere un film dai preferiti
-app.delete("/users/:Username/movies/:MovieID", async (req, res) => {
+// ===== 8. Rimuovi film dai preferiti (protetto + verifica) =====
+app.delete("/users/:Username/movies/:MovieID", passport.authenticate("jwt", { session: false }), async (req, res) => {
+  if (req.user.Username !== req.params.Username) return res.status(400).send("Permission denied");
+
   try {
     const updatedUser = await User.findOneAndUpdate(
       { Username: req.params.Username },
@@ -127,8 +145,10 @@ app.delete("/users/:Username/movies/:MovieID", async (req, res) => {
   }
 });
 
-// 9. Cancellare utente
-app.delete("/users/:Username", async (req, res) => {
+// ===== 9. Cancella utente (protetto + verifica) =====
+app.delete("/users/:Username", passport.authenticate("jwt", { session: false }), async (req, res) => {
+  if (req.user.Username !== req.params.Username) return res.status(400).send("Permission denied");
+
   try {
     const user = await User.findOneAndRemove({ Username: req.params.Username });
     if (!user) return res.status(404).send("User not found");
@@ -138,8 +158,8 @@ app.delete("/users/:Username", async (req, res) => {
   }
 });
 
-// 10. Read all users
-app.get("/users", async (req, res) => {
+// ===== 10. Leggi tutti gli utenti (protetto) =====
+app.get("/users", passport.authenticate("jwt", { session: false }), async (req, res) => {
   try {
     const users = await User.find();
     res.json(users);
@@ -148,8 +168,10 @@ app.get("/users", async (req, res) => {
   }
 });
 
-// 11. Read a specific user
-app.get("/users/:Username", async (req, res) => {
+// ===== 11. Leggi utente specifico (protetto + verifica) =====
+app.get("/users/:Username", passport.authenticate("jwt", { session: false }), async (req, res) => {
+  if (req.user.Username !== req.params.Username) return res.status(400).send("Permission denied");
+
   try {
     const user = await User.findOne({ Username: req.params.Username });
     if (!user) return res.status(404).send("User not found");
@@ -159,7 +181,7 @@ app.get("/users/:Username", async (req, res) => {
   }
 });
 
-// === PAGINE HTML ===
+// ===== 12. Pagine statiche =====
 app.get("/", (req, res) => {
   res.sendFile(path.join(__dirname, "public", "index.html"));
 });
@@ -168,14 +190,14 @@ app.get("/movies-list", (req, res) => {
   res.sendFile(path.join(__dirname, "public", "movies.html"));
 });
 
-// Error handler
+// ===== ERROR HANDLER =====
 app.use((err, req, res, next) => {
   console.error(err.stack);
   res.status(500).send("Something went wrong!");
 });
 
-// Start server
+// =================== SERVER ===================
 const PORT = 8000;
 app.listen(PORT, () => {
-  console.log(`Server is running on http://localhost:${PORT}`);
+  console.log(`Server running at http://localhost:${PORT}`);
 });
