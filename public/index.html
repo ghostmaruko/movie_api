@@ -33,10 +33,7 @@
           movies.forEach((movie) => {
             const card = document.createElement("div");
             card.classList.add("movie-card");
-            card.innerHTML = `
-              <img src="${movie.ImagePath}" alt="${movie.Title}">
-              <h3>${movie.title}</h3>
-            `;
+            card.innerHTML = `<img src="/img/${movie.ImagePath}" alt="${movie.Title}"><h3>${movie.Title}</h3>`;
             card.addEventListener("click", () => openPopup(movie));
             grid.appendChild(card);
           });
@@ -52,7 +49,7 @@
       const closePopup = document.getElementById("closePopup");
 
       function openPopup(movie) {
-        popupImg.src = movie.ImagePath;
+        popupImg.src = `/img/${movie.ImagePath}`;
         popupTitle.textContent = movie.Title;
         popupDesc.textContent = movie.Description;
         popupGenre.textContent = movie.Genre?.Name || "N/A";
