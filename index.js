@@ -9,11 +9,28 @@ const Models = require("./moongose/model.js");
 const Movie = Models.Movie;
 const User = Models.User;
 
+require("dotenv").config();
+
 // =================== APP ===================
 const app = express();
 
 // =================== DATABASE ===================
-mongoose.connect("mongodb://localhost:27017/movie_api", {
+/* mongoose.connect("mongodb://localhost:27017/movie_api", {
+  useNewUrlParser: true,
+  useUnifiedTopology: true,
+}); */
+/* mongoose
+  .connect(
+    "mongodb+srv://gesuscdc:Cbqp7v3yTXpoWVlh@mymoviedb.rk8ekzp.mongodb.net/myMovieDB?retryWrites=true&w=majority",
+    {
+      useNewUrlParser: true,
+      useUnifiedTopology: true,
+    }
+  )
+  .then(() => console.log("MongoDB connected successfully!"))
+  .catch((err) => console.error("MongoDB connection error:", err)); */
+
+mongoose.connect(process.env.CONNECTION_URI, {
   useNewUrlParser: true,
   useUnifiedTopology: true,
 });
