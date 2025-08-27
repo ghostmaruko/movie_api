@@ -34,7 +34,7 @@
             const card = document.createElement("div");
             card.classList.add("movie-card");
             card.innerHTML = `
-              <img src="/img/${movie.ImagePath}" alt="${movie.Title}" 
+              <img src="${movie.ImagePath}" alt="${movie.Title}" 
                    onerror="this.src='/img/placeholder.png'">
               <h3>${movie.Title}</h3>
             `;
@@ -53,7 +53,7 @@
       const closePopup = document.getElementById("closePopup");
 
       function openPopup(movie) {
-        popupImg.src = `/img/${movie.ImagePath}`;
+        popupImg.src = movie.ImagePath;
         popupImg.onerror = () => { popupImg.src = '/img/placeholder.png'; };
         popupTitle.textContent = movie.Title;
         popupDesc.textContent = movie.Description;
