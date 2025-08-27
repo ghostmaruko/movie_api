@@ -1,0 +1,9 @@
+{
+  "root": "public",
+  "routes": {
+    "/img/*": "img/*",
+    "/style.css": "style.css",
+    "/index.html": "index.html",
+    "/movies.html": "movies.html"
+  }
+}
