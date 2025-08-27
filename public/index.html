@@ -14,7 +14,7 @@
     <div class="popup" id="popup">
       <span class="close-btn" id="closePopup">&times;</span>
       <div class="popup-content">
-        <img id="popupImg" src="/img/placeholder.png" alt="Movie Image" />
+        <img id="popupImg" src="/img/placeholder.png" alt="Movie Image" onerror="this.src='/img/placeholder.png'" />
         <div class="popup-description">
           <h2 id="popupTitle"></h2>
           <p id="popupDesc"></p>
@@ -27,13 +27,17 @@
 
     <script>
       fetch("/movies")
-        .then((res) => res.json())
-        .then((movies) => {
+        .then(res => res.json())
+        .then(movies => {
           const grid = document.getElementById("movieGrid");
-          movies.forEach((movie) => {
+          movies.forEach(movie => {
             const card = document.createElement("div");
             card.classList.add("movie-card");
-            card.innerHTML = `<img src="/img/${movie.ImagePath}" alt="${movie.Title}"><h3>${movie.Title}</h3>`;
+            card.innerHTML = `
+              <img src="/img/${movie.ImagePath}" alt="${movie.Title}" 
+                   onerror="this.src='/img/placeholder.png'">
+              <h3>${movie.Title}</h3>
+            `;
             card.addEventListener("click", () => openPopup(movie));
             grid.appendChild(card);
           });
@@ -50,6 +54,7 @@
 
       function openPopup(movie) {
         popupImg.src = `/img/${movie.ImagePath}`;
+        popupImg.onerror = () => { popupImg.src = '/img/placeholder.png'; };
         popupTitle.textContent = movie.Title;
         popupDesc.textContent = movie.Description;
         popupGenre.textContent = movie.Genre?.Name || "N/A";
@@ -60,13 +65,8 @@
         popup.style.display = "flex";
       }
 
-      closePopup.addEventListener("click", () => {
-        popup.style.display = "none";
-      });
-
-      popup.addEventListener("click", (e) => {
-        if (e.target === popup) popup.style.display = "none";
-      });
+      closePopup.addEventListener("click", () => popup.style.display = "none");
+      popup.addEventListener("click", e => { if (e.target === popup) popup.style.display = "none"; });
     </script>
   </body>
 </html>
