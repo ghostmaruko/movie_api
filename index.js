@@ -48,7 +48,7 @@ require("./auth")(app);
 // =================== ROUTES ===================
 
 // ===== 1. Registrazione nuovo utente (pubblica) =====
-app.post("/users", async (req, res) => {
+/* app.post("/users", async (req, res) => {
   try {
     const existingUser = await User.findOne({ Username: req.body.Username });
     if (existingUser)
@@ -62,6 +62,33 @@ app.post("/users", async (req, res) => {
   } catch (err) {
     res.status(500).send("Error: " + err);
   }
+}); */
+app.post("/users", async (req, res) => {
+  let hashedPassword = Users.hashPassword(req.body.Password);
+  await Users.findOne({ Username: req.body.Username }) // Verifica se l'utente esiste già 
+  .then ((user) => {
+    if (user) {
+      // if the user is found, send a response that it already exists
+      return res.status(400).send(`${req.body.Username} already exists`);
+    } else {
+      Users
+      .create({
+        Username: req.body.Username,
+        Password: hashedPassword,
+        Email: req.body.Email,
+        Birthday: req.body.Birthday
+      })
+        .then((user) => { res.status(201).json(user) }) // Send the user object to the client
+        .catch((error) => {
+          console.error(error);
+          res.status(500).send("Error: " + error);
+        });
+    }
+  })
+    .catch((error) => {
+      console.error(error);
+      res.status(500).send("Error: " + error);
+    });
 });
 
 // ===== 2. Ottieni tutti i film (protetto) =====
