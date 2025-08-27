@@ -10,30 +10,16 @@ const Movie = Models.Movie;
 const User = Models.User;
 
 require("dotenv").config();
+console.log("CONNECTION_URI =", process.env.CONNECTION_URI);
 
 // =================== APP ===================
 const app = express();
 
 // =================== DATABASE ===================
-/* mongoose.connect("mongodb://localhost:27017/movie_api", {
-  useNewUrlParser: true,
-  useUnifiedTopology: true,
-}); */
-/* mongoose
-  .connect(
-    "mongodb+srv://gesuscdc:Cbqp7v3yTXpoWVlh@mymoviedb.rk8ekzp.mongodb.net/myMovieDB?retryWrites=true&w=majority",
-    {
-      useNewUrlParser: true,
-      useUnifiedTopology: true,
-    }
-  )
+mongoose
+  .connect(process.env.CONNECTION_URI)
   .then(() => console.log("MongoDB connected successfully!"))
-  .catch((err) => console.error("MongoDB connection error:", err)); */
-
-mongoose.connect(process.env.CONNECTION_URI, {
-  useNewUrlParser: true,
-  useUnifiedTopology: true,
-});
+  .catch((err) => console.error("MongoDB connection error:", err));
 
 // =================== VALIDATION ===================
 const { check, validationResult } = require("express-validator");
@@ -41,15 +27,12 @@ const { check, validationResult } = require("express-validator");
 // =================== CORS ===================
 const cors = require("cors");
 app.use(cors());
-
 let allowedOrigins = ["http://localhost:8080", "http://mio-frontend.com"];
-
 app.use(
   cors({
     origin: (origin, callback) => {
       if (!origin) return callback(null, true);
       if (allowedOrigins.indexOf(origin) === -1) {
-        // If a specific origin isn’t found on the list of allowed origins
         let message = `The CORS policy for this application doesn't allow access from origin ${origin}.`;
         return callback(new Error(message), false);
       }
@@ -69,21 +52,6 @@ require("./auth")(app);
 // =================== ROUTES ===================
 
 // ===== 1. Registrazione nuovo utente (pubblica) =====
-/* app.post("/users", async (req, res) => {
-  try {
-    const existingUser = await User.findOne({ Username: req.body.Username });
-    if (existingUser)
-      return res.status(400).send(`${req.body.Username} already exists`);
-
-    // Hash della password
-    req.body.Password = await bcrypt.hash(req.body.Password, 10);
-
-    const newUser = await User.create(req.body);
-    res.status(201).json(newUser);
-  } catch (err) {
-    res.status(500).send("Error: " + err);
-  }
-}); */
 app.post(
   "/users",
   [
@@ -96,38 +64,30 @@ app.post(
     check("Email", "Email does not appear to be valid").isEmail(),
   ],
   async (req, res) => {
-    //check the validation object for errors
-    let errors = validationResult(req);
+    const errors = validationResult(req);
     if (!errors.isEmpty()) {
       return res.status(422).json({ errors: errors.array() });
     }
 
-    let hashedPassword = Users.hashPassword(req.body.Password);
-    await Users.findOne({ Username: req.body.Username }) // Verifica se l'utente esiste già
-      .then((user) => {
-        if (user) {
-          // if the user is found, send a response that it already exists
-          return res.status(400).send(`${req.body.Username} already exists`);
-        } else {
-          Users.create({
-            Username: req.body.Username,
-            Password: hashedPassword,
-            Email: req.body.Email,
-            Birthday: req.body.Birthday,
-          })
-            .then((user) => {
-              res.status(201).json(user);
-            }) // Send the user object to the client
-            .catch((error) => {
-              console.error(error);
-              res.status(500).send("Error: " + error);
-            });
-        }
-      })
-      .catch((error) => {
-        console.error(error);
-        res.status(500).send("Error: " + error);
+    try {
+      const existingUser = await User.findOne({ Username: req.body.Username });
+      if (existingUser)
+        return res.status(400).send(`${req.body.Username} already exists`);
+
+      const hashedPassword = await bcrypt.hash(req.body.Password, 10);
+
+      const newUser = await User.create({
+        Username: req.body.Username,
+        Password: hashedPassword,
+        Email: req.body.Email,
+        Birthday: req.body.Birthday,
       });
+
+      res.status(201).json(newUser);
+    } catch (error) {
+      console.error(error);
+      res.status(500).send("Error: " + error);
+    }
   }
 );
 
@@ -329,10 +289,6 @@ app.use((err, req, res, next) => {
 });
 
 // =================== SERVER ===================
-/* const PORT = 8000;
-app.listen(PORT, () => {
-  console.log(`Server running at http://localhost:${PORT}`);
-}); */
 const port = process.env.PORT || 8080;
 app.listen(port, "0.0.0.0", () => {
   console.log("Listening on Port " + port);
