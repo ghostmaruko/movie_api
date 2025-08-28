@@ -2,23 +2,13 @@
 <html lang="en">
   <head>
     <meta charset="UTF-8" />
-    <title>Movie API Login</title>
+    <title>Movie Gallery</title>
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <link rel="stylesheet" href="/style.css" />
   </head>
   <body>
-    <h1>Login to Movie Gallery</h1>
-
-    <!-- Login form -->
-    <div id="loginDiv">
-      <input type="text" id="username" placeholder="Username" />
-      <input type="password" id="password" placeholder="Password" />
-      <button id="loginBtn">Login</button>
-      <p id="loginError" style="color: red;"></p>
-    </div>
-
-    <!-- Movie gallery (inizialmente nascosta) -->
-    <div class="movie-grid" id="movieGrid" style="display: none;"></div>
+    <h1>Movie Gallery</h1>
+    <div class="movie-grid" id="movieGrid"></div>
 
     <!-- Popup -->
     <div class="popup" id="popup">
@@ -37,49 +27,10 @@
     </div>
 
     <script>
-      let token = "";
-
-      const loginBtn = document.getElementById("loginBtn");
-      const loginError = document.getElementById("loginError");
       const movieGrid = document.getElementById("movieGrid");
 
-      loginBtn.addEventListener("click", () => {
-        const username = document.getElementById("username").value;
-        const password = document.getElementById("password").value;
-
-        fetch("/login", {
-          method: "POST",
-          headers: {
-            "Content-Type": "application/json",
-          },
-          body: JSON.stringify({ Username: username, Password: password }),
-        })
-          .then(res => res.json())
-          .then(data => {
-            if (data.user && data.token) {
-              token = data.token;
-              document.getElementById("loginDiv").style.display = "none";
-              movieGrid.style.display = "grid";
-              loadMovies();
-            } else {
-              loginError.textContent = "Username or password incorrect.";
-            }
-          })
-          .catch(err => {
-            loginError.textContent = "Error logging in.";
-            console.error(err);
-          });
-      });
-
-      // =====================
-      // Fetch dei film usando il token ricevuto
-      // =====================
-      function loadMovies() {
-        fetch("/movies", {
-          headers: {
-            "Authorization": `Bearer ${token}`
-          }
-        })
+      // Fetch dei film
+      fetch("/movies")
         .then(res => {
           if (!res.ok) throw new Error("Errore nel fetch dei film");
           return res.json();
@@ -98,11 +49,8 @@
           });
         })
         .catch(err => console.error(err));
-      }
 
-      // =====================
       // Popup
-      // =====================
       const popup = document.getElementById("popup");
       const popupImg = document.getElementById("popupImg");
       const popupTitle = document.getElementById("popupTitle");
