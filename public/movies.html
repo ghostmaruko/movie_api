@@ -4,67 +4,31 @@
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>Movie List</title>
-    <style>
-      body {
-        font-family: Arial, sans-serif;
-        margin: 20px;
-      }
-      .movie-card {
-        display: inline-block;
-        margin: 10px;
-        width: 200px;
-        text-align: center;
-      }
-      .movie-card img {
-        width: 100%;
-        cursor: pointer;
-      }
-      #popup {
-        display: none;
-        position: fixed;
-        top: 50%;
-        left: 50%;
-        transform: translate(-50%, -50%);
-        background: #fff;
-        padding: 20px;
-        border: 1px solid #333;
-        z-index: 100;
-      }
-      #popup button {
-        margin-top: 10px;
-      }
-      #overlay {
-        display: none;
-        position: fixed;
-        top: 0;
-        left: 0;
-        width: 100%;
-        height: 100%;
-        background: rgba(0, 0, 0, 0.5);
-        z-index: 50;
-      }
-    </style>
+    <link rel="stylesheet" href="style.css" />
   </head>
   <body>
     <h1>Movie List</h1>
-    <div id="movies-container"></div>
+    <div id="movies-container" class="movie-grid"></div>
 
-    <div id="overlay"></div>
-    <div id="popup">
-      <h2 id="popupTitle"></h2>
-      <p id="popupDescription"></p>
-      <p><strong>Genre:</strong> <span id="popupGenre"></span></p>
-      <p><strong>Director:</strong> <span id="popupDirector"></span></p>
-      <p><strong>Year:</strong> <span id="popupYear"></span></p>
-      <p><strong>Actors:</strong> <span id="popupActors"></span></p>
-      <button id="closePopup">Close</button>
+    <div id="popup" class="popup">
+      <div class="popup-content">
+        <img id="popupImg" src="" alt="Movie Poster" />
+        <div class="popup-description">
+          <span class="close-btn" id="closePopup">&times;</span>
+          <h2 id="popupTitle"></h2>
+          <p id="popupDescription"></p>
+          <p><strong>Genre:</strong> <span id="popupGenre"></span></p>
+          <p><strong>Director:</strong> <span id="popupDirector"></span></p>
+          <p><strong>Year:</strong> <span id="popupYear"></span></p>
+          <p><strong>Actors:</strong> <span id="popupActors"></span></p>
+        </div>
+      </div>
     </div>
 
     <script>
       const container = document.getElementById("movies-container");
       const popup = document.getElementById("popup");
-      const overlay = document.getElementById("overlay");
-
+      const popupImg = document.getElementById("popupImg");
       const popupTitle = document.getElementById("popupTitle");
       const popupDescription = document.getElementById("popupDescription");
       const popupGenre = document.getElementById("popupGenre");
@@ -77,16 +41,17 @@
         .then((res) => res.json())
         .then((movies) => {
           movies.forEach((movie) => {
-            console.log(movie); // controlla i campi
+            console.log(movie);
+
             const card = document.createElement("div");
             card.className = "movie-card";
 
             const img = document.createElement("img");
-            img.src = movie.ImagePath || "/img/placeholder.jpg";
+            img.src = "/img/" + (movie.imageURL || "placeholder.jpg");
             img.alt = movie.Title;
             img.addEventListener("click", () => showPopup(movie));
 
-            const title = document.createElement("p");
+            const title = document.createElement("h3");
             title.textContent = movie.Title;
 
             card.appendChild(img);
@@ -97,12 +62,12 @@
         .catch((err) => console.error(err));
 
       function showPopup(movie) {
-        popupTitle.textContent = movie.Title || "N/A";
-        popupDescription.textContent = movie.Description || "N/A";
-        popupGenre.textContent = movie.Genre?.Name || "N/A";
-        popupDirector.textContent = movie.Director?.Name || "N/A";
-        popupYear.textContent = movie.Year || "N/A";
-        popupActors.textContent = movie.Actors?.join(", ") || "N/A";
+        popupTitle.textContent = movie.title || "N/A";
+        popupDescription.textContent = movie.description || "N/A";
+        popupGenre.textContent = movie.genre?.name || "N/A";
+        popupDirector.textContent = movie.director?.name || "N/A";
+        popupYear.textContent = movie.year || "N/A";
+        popupActors.textContent = movie.actors?.join(", ") || "N/A";
 
         popup.style.display = "block";
         overlay.style.display = "block";
@@ -110,12 +75,10 @@
 
       closePopup.addEventListener("click", () => {
         popup.style.display = "none";
-        overlay.style.display = "none";
       });
 
-      overlay.addEventListener("click", () => {
-        popup.style.display = "none";
-        overlay.style.display = "none";
+      popup.addEventListener("click", (e) => {
+        if (e.target === popup) popup.style.display = "none";
       });
     </script>
   </body>
