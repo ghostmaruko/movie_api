@@ -31,32 +31,33 @@
     </div>
 
     <script>
-      fetch("/movies")
-        .then(res => {
-          if (!res.ok) throw new Error("Unauthorized or server error");
+      const token =
+        "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJfaWQiOiI2OGIwNjUxZDNiODlhZWMyNjFjNmRhY2MiLCJVc2VybmFtZSI6Im1hcmlvbmUiLCJFbWFpbCI6Im1hcmlvZW1haWxAZW1haWwuY29tIiwiaWF0IjoxNzU2MzkwNjk2LCJleHAiOjE3NTY5OTU0OTYsInN1YiI6Im1hcmlvbmUifQ.0XqMuNbRgdeIH_0lAlerCQqo-wpnQqAJo_l7Zrl06t0";
+
+      fetch("/movies", {
+        headers: {
+          Authorization: `Bearer ${token}`,
+        },
+      })
+        .then((res) => {
+          if (!res.ok) throw new Error("Errore nel fetch dei film");
           return res.json();
         })
-        .then(movies => {
+        .then((movies) => {
           const grid = document.getElementById("movieGrid");
-          movies.forEach(movie => {
+          movies.forEach((movie) => {
             const card = document.createElement("div");
             card.classList.add("movie-card");
-
             card.innerHTML = `
-              <img src="${movie.ImagePath}" alt="${movie.Title}" 
-                   onerror="this.src='/img/placeholder.png'">
-              <h3>${movie.Title}</h3>
-            `;
-
+        <img src="${movie.ImagePath}" alt="${movie.Title}" 
+             onerror="this.src='/img/placeholder.png'">
+        <h3>${movie.Title}</h3>
+      `;
             card.addEventListener("click", () => openPopup(movie));
             grid.appendChild(card);
           });
         })
-        .catch(err => {
-          console.error("Errore caricamento film:", err);
-          document.getElementById("movieGrid").innerHTML =
-            "<p>Impossibile caricare i film. Assicurati di essere autenticato.</p>";
-        });
+        .catch((err) => console.error(err));
 
       const popup = document.getElementById("popup");
       const popupImg = document.getElementById("popupImg");
@@ -70,7 +71,7 @@
       function openPopup(movie) {
         popupImg.src = movie.ImagePath;
         popupImg.onerror = () => {
-          popupImg.src = '/img/placeholder.png';
+          popupImg.src = "/img/placeholder.png";
         };
         popupTitle.textContent = movie.Title;
         popupDesc.textContent = movie.Description;
@@ -86,7 +87,7 @@
         popup.style.display = "none";
       });
 
-      popup.addEventListener("click", e => {
+      popup.addEventListener("click", (e) => {
         if (e.target === popup) popup.style.display = "none";
       });
     </script>
