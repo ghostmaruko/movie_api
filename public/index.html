@@ -1,46 +1,132 @@
 <!DOCTYPE html>
 <html lang="en">
-<head>
-  <meta charset="UTF-8">
-  <title>Login</title>
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <link rel="stylesheet" href="/style.css">
-</head>
-<body>
-  <h1>Login</h1>
-  <form id="loginForm">
-    <input type="text" id="username" placeholder="Username" required>
-    <input type="password" id="password" placeholder="Password" required>
-    <button type="submit">Login</button>
-  </form>
-  <p id="message"></p>
+  <head>
+    <meta charset="UTF-8" />
+    <title>Movie API Login</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <link rel="stylesheet" href="/style.css" />
+  </head>
+  <body>
+    <h1>Login to Movie Gallery</h1>
 
-  <script>
-    const form = document.getElementById("loginForm");
-    const message = document.getElementById("message");
+    <!-- Login form -->
+    <div id="loginDiv">
+      <input type="text" id="username" placeholder="Username" />
+      <input type="password" id="password" placeholder="Password" />
+      <button id="loginBtn">Login</button>
+      <p id="loginError" style="color: red;"></p>
+    </div>
 
-    form.addEventListener("submit", e => {
-      e.preventDefault();
-      const username = document.getElementById("username").value;
-      const password = document.getElementById("password").value;
+    <!-- Movie gallery (inizialmente nascosta) -->
+    <div class="movie-grid" id="movieGrid" style="display: none;"></div>
 
-      fetch("/login", {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ Username: username, Password: password })
-      })
-      .then(res => res.json())
-      .then(data => {
-        if (data.user) {
-          localStorage.setItem("token", data.token);
-          message.textContent = "Login effettuato!";
-          window.location.href = "/movies.html"; // reindirizza
-        } else {
-          message.textContent = "Username o password errati";
-        }
-      })
-      .catch(err => { console.error(err); message.textContent = "Errore login"; });
-    });
-  </script>
-</body>
+    <!-- Popup -->
+    <div class="popup" id="popup">
+      <span class="close-btn" id="closePopup">&times;</span>
+      <div class="popup-content">
+        <img id="popupImg" src="/img/placeholder.png" alt="Movie Image" />
+        <div class="popup-description">
+          <h2 id="popupTitle"></h2>
+          <p id="popupDesc"></p>
+          <p><strong>Genre:</strong> <span id="popupGenre"></span></p>
+          <p><strong>Director:</strong> <span id="popupDirector"></span></p>
+          <p><strong>Year:</strong> <span id="popupYear"></span></p>
+          <p><strong>Actors:</strong> <span id="popupActor"></span></p>
+        </div>
+      </div>
+    </div>
+
+    <script>
+      let token = "";
+
+      const loginBtn = document.getElementById("loginBtn");
+      const loginError = document.getElementById("loginError");
+      const movieGrid = document.getElementById("movieGrid");
+
+      loginBtn.addEventListener("click", () => {
+        const username = document.getElementById("username").value;
+        const password = document.getElementById("password").value;
+
+        fetch("/login", {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json",
+          },
+          body: JSON.stringify({ Username: username, Password: password }),
+        })
+          .then(res => res.json())
+          .then(data => {
+            if (data.user && data.token) {
+              token = data.token;
+              document.getElementById("loginDiv").style.display = "none";
+              movieGrid.style.display = "grid";
+              loadMovies();
+            } else {
+              loginError.textContent = "Username or password incorrect.";
+            }
+          })
+          .catch(err => {
+            loginError.textContent = "Error logging in.";
+            console.error(err);
+          });
+      });
+
+      // =====================
+      // Fetch dei film usando il token ricevuto
+      // =====================
+      function loadMovies() {
+        fetch("/movies", {
+          headers: {
+            "Authorization": `Bearer ${token}`
+          }
+        })
+        .then(res => {
+          if (!res.ok) throw new Error("Errore nel fetch dei film");
+          return res.json();
+        })
+        .then(movies => {
+          movies.forEach(movie => {
+            const card = document.createElement("div");
+            card.classList.add("movie-card");
+            card.innerHTML = `
+              <img src="${movie.ImagePath}" alt="${movie.Title}" 
+                   onerror="this.src='/img/placeholder.png'">
+              <h3>${movie.Title}</h3>
+            `;
+            card.addEventListener("click", () => openPopup(movie));
+            movieGrid.appendChild(card);
+          });
+        })
+        .catch(err => console.error(err));
+      }
+
+      // =====================
+      // Popup
+      // =====================
+      const popup = document.getElementById("popup");
+      const popupImg = document.getElementById("popupImg");
+      const popupTitle = document.getElementById("popupTitle");
+      const popupDesc = document.getElementById("popupDesc");
+      const popupGenre = document.getElementById("popupGenre");
+      const popupDirector = document.getElementById("popupDirector");
+      const popupYear = document.getElementById("popupYear");
+      const popupActor = document.getElementById("popupActor");
+      const closePopup = document.getElementById("closePopup");
+
+      function openPopup(movie) {
+        popupImg.src = movie.ImagePath;
+        popupImg.onerror = () => { popupImg.src = '/img/placeholder.png'; };
+        popupTitle.textContent = movie.Title;
+        popupDesc.textContent = movie.Description;
+        popupGenre.textContent = movie.Genre?.Name || "N/A";
+        popupDirector.textContent = movie.Director?.Name || "N/A";
+        popupYear.textContent = movie.Year || "N/A";
+        popupActor.textContent = movie.Actors?.join(", ") || "N/A";
+        popup.style.display = "flex";
+      }
+
+      closePopup.addEventListener("click", () => { popup.style.display = "none"; });
+      popup.addEventListener("click", e => { if (e.target === popup) popup.style.display = "none"; });
+    </script>
+  </body>
 </html>
