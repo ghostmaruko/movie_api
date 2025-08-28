@@ -178,6 +178,8 @@ app.put(
 );
 
 // ===== 7. Aggiungi film ai preferiti (protetto + verifica) =====
+const mongoose = require("mongoose"); // 
+
 app.post(
   "/users/:Username/movies/:MovieID",
   passport.authenticate("jwt", { session: false }),
@@ -186,14 +188,19 @@ app.post(
       return res.status(400).send("Permission denied");
 
     try {
+      // converte MovieID in ObjectId
+      const movieId = mongoose.Types.ObjectId(req.params.MovieID);
+
       const updatedUser = await User.findOneAndUpdate(
         { Username: req.params.Username },
-        { $addToSet: { FavoriteMovies: req.params.MovieID } },
+        { $addToSet: { FavoriteMovies: movieId } },
         { new: true }
       );
+
       if (!updatedUser) return res.status(404).send("User not found");
       res.json(updatedUser);
     } catch (err) {
+      console.error(err);
       res.status(500).send("Error: " + err);
     }
   }
