@@ -26,28 +26,25 @@ const { check, validationResult } = require("express-validator");
 
 // =================== CORS ===================
 const cors = require("cors");
-app.use(cors());
 let allowedOrigins = ["http://localhost:8080", "http://mio-frontend.com"];
-app.use(
-  cors({
-    origin: (origin, callback) => {
-      if (!origin) return callback(null, true);
-      if (allowedOrigins.indexOf(origin) === -1) {
-        let message = `The CORS policy for this application doesn't allow access from origin ${origin}.`;
-        return callback(new Error(message), false);
-      }
-      return callback(null, true);
-    },
-  })
-);
+app.use(cors({
+  origin: (origin, callback) => {
+    if (!origin) return callback(null, true);
+    if (allowedOrigins.indexOf(origin) === -1) {
+      let message = `The CORS policy for this application doesn't allow access from origin ${origin}.`;
+      return callback(new Error(message), false);
+    }
+    return callback(null, true);
+  }
+}));
 
 // =================== MIDDLEWARE ===================
 app.use(express.json());
 app.use(passport.initialize());
-/* app.use(express.static("public")); */
+// Serve static files (css, js, img, html)
 app.use(express.static(path.join(__dirname, "public")));
 
-// =================== LOGIN ===================
+// =================== LOGIN / REGISTER ===================
 require("./auth")(app);
 
 // =================== ROUTES ===================
@@ -57,23 +54,17 @@ app.post(
   "/users",
   [
     check("Username", "Username is required").isLength({ min: 5 }),
-    check(
-      "Username",
-      "Username contains non alphanumeric characters - not allowed."
-    ).isAlphanumeric(),
+    check("Username", "Username contains non alphanumeric characters - not allowed.").isAlphanumeric(),
     check("Password", "Password is required").not().isEmpty(),
     check("Email", "Email does not appear to be valid").isEmail(),
   ],
   async (req, res) => {
     const errors = validationResult(req);
-    if (!errors.isEmpty()) {
-      return res.status(422).json({ errors: errors.array() });
-    }
+    if (!errors.isEmpty()) return res.status(422).json({ errors: errors.array() });
 
     try {
       const existingUser = await User.findOne({ Username: req.body.Username });
-      if (existingUser)
-        return res.status(400).send(`${req.body.Username} already exists`);
+      if (existingUser) return res.status(400).send(`${req.body.Username} already exists`);
 
       const hashedPassword = await bcrypt.hash(req.body.Password, 10);
 
@@ -92,19 +83,15 @@ app.post(
   }
 );
 
-// ===== 2. Ottieni tutti i film (protetto) =====
-app.get(
-  "/movies",
-  passport.authenticate("jwt", { session: false }),
-  async (req, res) => {
-    try {
-      const movies = await Movie.find();
-      res.json(movies);
-    } catch (err) {
-      res.status(500).send("Error: " + err);
-    }
+// ===== 2. Ottieni tutti i film (PUBBLICA per task) =====
+app.get("/movies", async (req, res) => {
+  try {
+    const movies = await Movie.find();
+    res.json(movies);
+  } catch (err) {
+    res.status(500).send("Error: " + err);
   }
-);
+});
 
 // ===== 3. Ottieni film per titolo (protetto) =====
 app.get(
@@ -281,7 +268,6 @@ app.get(
 app.get("/", (req, res) => {
   res.sendFile(path.join(__dirname, "public", "index.html"));
 });
-
 app.get("/movies-list", (req, res) => {
   res.sendFile(path.join(__dirname, "public", "movies.html"));
 });

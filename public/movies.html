@@ -2,7 +2,7 @@
 <html lang="en">
   <head>
     <meta charset="UTF-8" />
-    <title>Movie List</title>
+    <title>Movie Gallery</title>
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <link rel="stylesheet" href="/style.css" />
   </head>
@@ -14,12 +14,7 @@
     <div class="popup" id="popup">
       <span class="close-btn" id="closePopup">&times;</span>
       <div class="popup-content">
-        <img
-          id="popupImg"
-          src="/img/placeholder.png"
-          alt="Movie Image"
-          onerror="this.src='/img/placeholder.png'"
-        />
+        <img id="popupImg" src="/img/placeholder.png" alt="Movie Image" />
         <div class="popup-description">
           <h2 id="popupTitle"></h2>
           <p id="popupDesc"></p>
@@ -32,12 +27,8 @@
     </div>
 
     <script>
-      // Fetch movies senza token
       fetch("/movies")
-        .then(res => {
-          if (!res.ok) throw new Error("Errore nel fetch dei film");
-          return res.json();
-        })
+        .then(res => res.json())
         .then(movies => {
           const grid = document.getElementById("movieGrid");
           movies.forEach(movie => {
@@ -67,9 +58,7 @@
 
       function openPopup(movie) {
         popupImg.src = movie.ImagePath;
-        popupImg.onerror = () => {
-          popupImg.src = '/img/placeholder.png';
-        };
+        popupImg.onerror = () => { popupImg.src = '/img/placeholder.png'; };
         popupTitle.textContent = movie.Title;
         popupDesc.textContent = movie.Description;
         popupGenre.textContent = movie.Genre?.Name || "N/A";
@@ -79,13 +68,8 @@
         popup.style.display = "flex";
       }
 
-      closePopup.addEventListener("click", () => {
-        popup.style.display = "none";
-      });
-
-      popup.addEventListener("click", e => {
-        if (e.target === popup) popup.style.display = "none";
-      });
+      closePopup.addEventListener("click", () => { popup.style.display = "none"; });
+      popup.addEventListener("click", e => { if (e.target === popup) popup.style.display = "none"; });
     </script>
   </body>
 </html>
