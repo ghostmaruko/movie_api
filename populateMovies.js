@@ -2,6 +2,7 @@ const mongoose = require("mongoose");
 const Models = require("./moongose/model.js");
 const Movie = Models.Movie;
 
+
 const movies = [
   {
     Title: "The Lord of the Rings",
@@ -126,30 +127,23 @@ const movies = [
 ];
 
 
-// Funzione di popolamento
 async function populate() {
   try {
     await mongoose.connect("mongodb://localhost:27017/movie_api");
     console.log("Connected to MongoDB");
 
-    // Rimuove tutti i film esistenti
     await Movie.deleteMany();
-
-    // Inserisce i nuovi film
     const result = await Movie.insertMany(movies);
     console.log(`${result.length} movies inserted!`);
 
-    // Stampa gli ID dei film
     result.forEach((movie) => {
       console.log(`ID for "${movie.Title}": ${movie._id}`);
     });
-
   } catch (err) {
     console.error(err);
   } finally {
-    mongoose.connection.close();
+    await mongoose.connection.close();
   }
 }
 
-// Avvia il popolamento
 populate();
