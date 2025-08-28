@@ -2,7 +2,6 @@ const mongoose = require("mongoose");
 const Models = require("./moongose/model.js");
 const Movie = Models.Movie;
 
-
 const movies = [
   {
     Title: "The Lord of the Rings",
@@ -125,7 +124,6 @@ const movies = [
     Featured: false,
   },
 ];
-
 
 async function populate() {
   try {
