@@ -2,63 +2,9 @@
 <html lang="en">
   <head>
     <meta charset="UTF-8" />
-    <title>Movie Gallery</title>
+    <title>Movie List</title>
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <link rel="stylesheet" href="/style.css" />
-    <style>
-      /* Mini CSS per esempio funzionante */
-      /*.movie-grid {
-        display: grid;
-        grid-template-columns: repeat(auto-fill, minmax(180px, 1fr));
-        gap: 16px;
-      }
-      .movie-card {
-        cursor: pointer;
-        text-align: center;
-      }
-      .movie-card img {
-        width: 100%;
-        height: 270px;
-        object-fit: cover;
-        border-radius: 8px;
-      }
-      .popup {
-        display: none;
-        position: fixed;
-        top: 0;
-        left: 0;
-        width: 100%;
-        height: 100%;
-        background: rgba(0, 0, 0, 0.8);
-        justify-content: center;
-        align-items: center;
-      }
-      .popup-content {
-        background: #fff;
-        padding: 20px;
-        border-radius: 10px;
-        max-width: 500px;
-        width: 90%;
-        position: relative;
-        display: flex;
-        gap: 10px;
-      }
-      .popup img {
-        width: 150px;
-        height: 220px;
-        object-fit: cover;
-      }
-      .popup-description {
-        flex: 1;
-      }
-      .close-btn {
-        position: absolute;
-        top: 10px;
-        right: 15px;
-        cursor: pointer;
-        font-size: 24px;
-      }*/
-    </style>
   </head>
   <body>
     <h1>Movie Gallery</h1>
@@ -82,34 +28,23 @@
 
     <script>
       const token = localStorage.getItem("token");
-      if (!token) {
-        alert("Devi fare il login prima!");
-        window.location.href = "/login.html";
-      }
+      if (!token) alert("Devi fare login prima!");
 
-      // Fetch dei film protetto dal token
       fetch("/movies", {
         headers: { Authorization: `Bearer ${token}` },
       })
-        .then((res) =>
-          res.ok ? res.json() : Promise.reject("Errore nel fetch dei film")
-        )
+        .then((res) => res.json())
         .then((movies) => {
           const grid = document.getElementById("movieGrid");
           movies.forEach((movie) => {
             const card = document.createElement("div");
             card.classList.add("movie-card");
-            card.innerHTML = `
-          <img src="${movie.ImagePath}" alt="${movie.Title}" onerror="this.src='/img/placeholder.png'">
-          <h3>${movie.Title}</h3>
-        `;
+            card.innerHTML = `<img src="${movie.ImagePath}" alt="${movie.Title}" onerror="this.src='/img/placeholder.png'"><h3>${movie.Title}</h3>`;
             card.addEventListener("click", () => openPopup(movie));
             grid.appendChild(card);
           });
-        })
-        .catch((err) => console.error(err));
+        });
 
-      // Popup logic
       const popup = document.getElementById("popup");
       const popupImg = document.getElementById("popupImg");
       const popupTitle = document.getElementById("popupTitle");
@@ -122,9 +57,6 @@
 
       function openPopup(movie) {
         popupImg.src = movie.ImagePath;
-        popupImg.onerror = () => {
-          popupImg.src = "/img/placeholder.png";
-        };
         popupTitle.textContent = movie.Title;
         popupDesc.textContent = movie.Description;
         popupGenre.textContent = movie.Genre?.Name || "N/A";
@@ -134,9 +66,10 @@
         popup.style.display = "flex";
       }
 
-      closePopup.addEventListener("click", () => {
-        popup.style.display = "none";
-      });
+      closePopup.addEventListener(
+        "click",
+        () => (popup.style.display = "none")
+      );
       popup.addEventListener("click", (e) => {
         if (e.target === popup) popup.style.display = "none";
       });
