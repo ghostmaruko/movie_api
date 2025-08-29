@@ -48,7 +48,9 @@
 
             const img = document.createElement("img");
             /* img.src = "/img/" + (movie.imageURL || "placeholder.jpg"); */
-            img.src = movie.imageURL ? `/img/${movie.imageURL}` : "/img/placeholder.jpg";
+            img.src = movie.imageURL
+              ? `/img/${movie.imageURL}`
+              : "/img/placeholder.jpg";
 
             img.alt = movie.title;
             img.addEventListener("click", () => showPopup(movie));
@@ -71,8 +73,9 @@
         popupDescription.textContent = movie.description || "N/A";
         popupGenre.textContent = movie.genre?.name || "N/A";
         popupDirector.textContent = movie.director?.name || "N/A";
-        popupYear.textContent = movie.year || "N/A";
-        popupActors.textContent = movie.actors?.join(", ") || "N/A";
+        popupYear.textContent = movie.Year || movie.year || "N/A";
+        popupActors.textContent =
+          movie.Actors?.join(", ") || movie.actors?.join(", ") || "N/A";
 
         popup.style.display = "flex";
       }
