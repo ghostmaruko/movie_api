@@ -48,11 +48,11 @@
 
             const img = document.createElement("img");
             img.src = "/img/" + (movie.imageURL || "placeholder.jpg");
-            img.alt = movie.title;
+            img.alt = movie.title || "Movie poster";
             img.addEventListener("click", () => showPopup(movie));
 
             const title = document.createElement("h3");
-            title.textContent = movie.title;
+            title.textContent = movie.title || "N/A";
 
             card.appendChild(img);
             card.appendChild(title);
@@ -69,8 +69,9 @@
         popupDescription.textContent = movie.description || "N/A";
         popupGenre.textContent = movie.genre?.name || "N/A";
         popupDirector.textContent = movie.director?.name || "N/A";
-        popupYear.textContent = movie.year || "N/A";
-        popupActors.textContent = movie.actors?.join(", ") || "N/A";
+        popupYear.textContent = movie.Year || movie.year || "N/A";
+        popupActors.textContent =
+          (movie.Actors || movie.actors || []).join(", ") || "N/A";
 
         popup.style.display = "flex";
       }

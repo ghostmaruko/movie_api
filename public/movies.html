@@ -70,13 +70,15 @@
         popupImage.src = movie.imageURL
           ? `/img/${movie.imageURL}`
           : "/img/placeholder.jpg";
+        popupImage.alt = movie.title || "Movie poster";
+
         popupTitle.textContent = movie.title || "N/A";
         popupDescription.textContent = movie.description || "N/A";
         popupGenre.textContent = movie.genre?.name || "N/A";
         popupDirector.textContent = movie.director?.name || "N/A";
         popupYear.textContent = movie.Year || movie.year || "N/A";
         popupActors.textContent =
-          movie.Actors?.join(", ") || movie.actors?.join(", ") || "N/A";
+          (movie.Actors || movie.actors || []).join(", ") || "N/A";
 
         popup.style.display = "flex";
       }

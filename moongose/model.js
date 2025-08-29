@@ -1,28 +1,35 @@
 const mongoose = require("mongoose");
 
 // Schema per i film
-let movieSchema = mongoose.Schema({
-  Title: { type: String, required: true },
-  Description: { type: String, required: true },
-  Genre: { Name: String, Description: String },
-  Director: { Name: String, Bio: String },
-  Year: Number,
-  Actors: [String],
-  ImagePath: String,
-  Featured: Boolean,
+const movieSchema = mongoose.Schema({
+  title: { type: String, required: true },
+  description: { type: String, required: true },
+  genre: {
+    name: String,
+    description: String,
+  },
+  director: {
+    name: String,
+    bio: String,
+  },
+  year: Number,
+  actors: [String],
+  imageURL: String,
+  featured: Boolean,
 });
 
 // Schema per gli utenti
-let userSchema = mongoose.Schema({
-  Username: { type: String, required: true },
-  Password: { type: String, required: true },
-  Email: { type: String, required: true },
-  Birthday: Date,
-  FavoriteMovies: [{ type: mongoose.Schema.Types.ObjectId, ref: "Movie" }],
+const userSchema = mongoose.Schema({
+  username: { type: String, required: true },
+  password: { type: String, required: true },
+  email: { type: String, required: true },
+  birthday: Date,
+  favoriteMovies: [{ type: mongoose.Schema.Types.ObjectId, ref: "Movie" }],
 });
 
 // hashing della password
 const bcrypt = require("bcrypt");
+
 // funzione statica per hashare la password
 userSchema.statics.hashPassword = (password) => {
   return bcrypt.hashSync(password, 10);
@@ -30,12 +37,11 @@ userSchema.statics.hashPassword = (password) => {
 
 // metodo istanza per validare la password in fase di login
 userSchema.methods.validatePassword = function (password) {
-  return bcrypt.compareSync(password, this.Password);
+  return bcrypt.compareSync(password, this.password);
 };
 
-
-let Movie = mongoose.model("Movie", movieSchema);
-let User = mongoose.model("User", userSchema);
+const Movie = mongoose.model("Movie", movieSchema);
+const User = mongoose.model("User", userSchema);
 
 module.exports.Movie = Movie;
 module.exports.User = User;
