@@ -10,7 +10,7 @@ A complete REST API built with Node.js, Express, and MongoDB that allows users t
 - 🟢 **Live App**: https://movie-api-2025-9f90ce074c45.herokuapp.com/
 - 🧠 **API Docs**: https://movie-api-2025-9f90ce074c45.herokuapp.com/documentation.html
 - 🧪 **Postman Collection**: Included in project files
-- 🗂️ **GitHub Repo**: https://github.com/<ghostmaruko>/movie_api
+- 🗂️ **GitHub Repo**: https://github.com/ghostmaruko/movie_api
 
 ---
 
@@ -99,5 +99,6 @@ movie_api/
 
 ## Author
 
-Marco Esu – 2025  
+Marco Esu – 2025 
+ 
 This project was completed as part of the Full-Stack Web Development Career Path.
