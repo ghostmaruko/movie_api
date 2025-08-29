@@ -54,7 +54,7 @@ const movies = [
     },
     Year: 1994,
     Actors: ["John Travolta", "Samuel L. Jackson", "Uma Thurman"],
-    ImagePath: "/img/pulp.jpg",
+    ImagePath: "/img/pulp_fiction.jpg",
     Featured: false,
   },
   {
@@ -76,7 +76,7 @@ const movies = [
     Director: { Name: "Robert Zemeckis", Bio: "American filmmaker" },
     Year: 1994,
     Actors: ["Tom Hanks", "Robin Wright", "Gary Sinise"],
-    ImagePath: "/img/forrest.jpg",
+    ImagePath: "/img/forrest_gump.jpg",
     Featured: false,
   },
   {
