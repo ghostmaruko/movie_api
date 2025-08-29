@@ -43,6 +43,7 @@
         .then((res) => res.json())
         .then((movies) => {
           movies.forEach((movie) => {
+            console.log(movie);
             const card = document.createElement("div");
             card.className = "movie-card";
 
