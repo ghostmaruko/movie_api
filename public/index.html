@@ -8,12 +8,12 @@
   </head>
   <body>
     <h1>Movie List</h1>
-    <div id="movies-container" class="movie-grid"></div>
+    <div class="movie-grid" id="movies-container"></div>
 
-    <!-- Popup -->
-    <div id="popup" class="popup">
+    <!-- POPUP -->
+    <div class="popup" id="popup">
       <div class="popup-content">
-        <img id="popupImg" src="" alt="Movie Image" />
+        <img id="popupImage" src="" alt="" />
         <div class="popup-description">
           <span class="close-btn" id="closePopup">&times;</span>
           <h2 id="popupTitle"></h2>
@@ -29,7 +29,8 @@
     <script>
       const container = document.getElementById("movies-container");
       const popup = document.getElementById("popup");
-      const popupImg = document.getElementById("popupImg");
+
+      const popupImage = document.getElementById("popupImage");
       const popupTitle = document.getElementById("popupTitle");
       const popupDescription = document.getElementById("popupDescription");
       const popupGenre = document.getElementById("popupGenre");
@@ -46,12 +47,12 @@
             card.className = "movie-card";
 
             const img = document.createElement("img");
-            img.src = movie.ImagePath || "/img/placeholder.jpg";
-            img.alt = movie.Title;
+            img.src = "/img/" + (movie.imageURL || "placeholder.jpg");
+            img.alt = movie.title;
             img.addEventListener("click", () => showPopup(movie));
 
             const title = document.createElement("h3");
-            title.textContent = movie.Title;
+            title.textContent = movie.title;
 
             card.appendChild(img);
             card.appendChild(title);
@@ -61,6 +62,9 @@
         .catch((err) => console.error(err));
 
       function showPopup(movie) {
+        popupImage.src = "/img/" + (movie.imageURL || "placeholder.jpg");
+        popupImage.alt = movie.title || "Movie poster";
+
         popupTitle.textContent = movie.title || "N/A";
         popupDescription.textContent = movie.description || "N/A";
         popupGenre.textContent = movie.genre?.name || "N/A";
@@ -68,16 +72,17 @@
         popupYear.textContent = movie.year || "N/A";
         popupActors.textContent = movie.actors?.join(", ") || "N/A";
 
-        popup.style.display = "block";
-        overlay.style.display = "block";
+        popup.style.display = "flex";
       }
 
       closePopup.addEventListener("click", () => {
         popup.style.display = "none";
       });
 
-      popup.addEventListener("click", (e) => {
-        if (e.target === popup) popup.style.display = "none";
+      window.addEventListener("click", (e) => {
+        if (e.target === popup) {
+          popup.style.display = "none";
+        }
       });
     </script>
   </body>
