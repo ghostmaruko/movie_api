@@ -1,110 +1,103 @@
+
 # Movie API Project
 
-A simple REST API built with Node.js and Express that allows users to manage movie information, user accounts, and favorite movies. Includes a minimal frontend interface to display the movies in a responsive gallery with popup details.
+A complete REST API built with Node.js, Express, and MongoDB that allows users to manage movie information, user accounts, and favorite movies. Includes a minimal frontend interface to display the movies in a responsive gallery with popup details.
+
+---
+
+## Live Links
+
+- 🟢 **Live App**: https://movie-api-2025-9f90ce074c45.herokuapp.com/
+- 🧠 **API Docs**: https://movie-api-2025-9f90ce074c45.herokuapp.com/documentation.html
+- 🧪 **Postman Collection**: Included in project files
+- 🗂️ **GitHub Repo**: https://github.com/<ghostmaruko>/movie_api
+
+---
+
+## Features
+
+### Backend API Endpoints
+
+- `GET /movies` — Returns all movies
+- `GET /movies/:title` — Returns a movie by title
+- `GET /genres/:name` — Returns genre description
+- `GET /directors/:name` — Returns director info
+- `POST /users` — Registers a new user
+- `PUT /users/:username` — Updates user info
+- `POST /users/:username/movies/:movieID` — Add to favorites
+- `DELETE /users/:username/movies/:movieID` — Remove from favorites
+- `DELETE /users/:username` — Delete user account
+
+🔐 Authentication: All routes (except POST /users and /login) require JWT authentication.  
+🛡️ Authorization: Passport.js with HTTP Basic and JWT strategies.  
+🔐 Passwords are hashed using bcrypt.  
+🧪 All endpoints tested in Postman.
+
+---
+
+## Frontend (Static UI)
+
+Served via Express using static middleware.
+
+- `/` → Responsive movie gallery with grid and popup modals
+- `/movies-list` → Alternative static layout
 
 ---
 
 ## Project Structure
 
 movie_api/
-├── index.js # Express server
-├── package.json # Project dependencies
+├── index.js
+├── package.json
+├── moongose/
+│   └── model.js
 ├── public/
-│ ├── index.html # Main movie gallery
-│ ├── movies.html # Alternative movie view with popup
-│ ├── documentation.html # API endpoint documentation
-│ ├── style.css # CSS styles for the frontend
-│ └── img/ # Movie posters
-│ └── *.jpg
-├── movie_api_postman_collection.json # Postman tests
-├── test.js # (Optional dev script)
-├── log.txt # (Optional logs)
-└── screenshots/ # Screenshots of Postman tests
+│   ├── index.html
+│   ├── movies.html
+│   ├── documentation.html
+│   ├── style.css
+│   └── img/ (movie posters)
+├── movie_api_postman_collection.json
+├── log.txt
+└── screenshots/ (Postman test results)
 
 ---
 
-## Features
+## Deployment
 
-### API Endpoints
-
-- `GET /movies` — Returns all movies  
-- `GET /movies/:title` — Returns a movie by title  
-- `GET /genres/:name` — Returns genre description  
-- `GET /directors/:name` — Returns director info  
-- `POST /users` — Registers a new user  
-- `PUT /users/:username` — Updates username  
-- `POST /users/:username/movies/:movieID` — Add to favorites  
-- `DELETE /users/:username/movies/:movieID` — Remove from favorites  
-- `DELETE /users/:username` — Delete user account  
-
->> See full documentation in `public/documentation.html` 
+✅ MongoDB Atlas connected via Mongoose  
+✅ Environment variables used (`CONNECTION_URI`, `PORT`)  
+✅ App deployed to Heroku
 
 ---
 
-## Frontend (Mini UI)
+## Tech Stack
 
-- `http://localhost:8000/` → Responsive grid gallery with popups
-- `http://localhost:8000/movies-list` → Alternative layout (griglia)
-- Images and CSS are served via Express static middleware.
+- Node.js
+- Express.js
+- MongoDB & Mongoose
+- JWT (Authentication)
+- bcrypt (Password hashing)
+- express-validator (Data validation)
+- CORS
+- Morgan
+- Postman
 
 ---
 
-## Postman Testing
+## Development Notes
 
-Postman test collection: `movie_api_postman_collection.json`  
-Screenshots of responses: See `screenshots/` folder (if included).
+- CORS implemented to allow all origins
+- Password hashing applied on registration and login
+- Data validation added using `express-validator`
+- MongoDB Atlas used instead of in-memory DB
+- Heroku deployment tested and verified
+- All API features from Achievement 2 and 3 implemented
+- Favicon.ico and broken image issues resolved via path normalization
 
 ---
-
-## How to Run Locally
-
-1. **Clone or extract the project**
-2. Run the following in terminal:
-   ```bash
-   npm install
-   node index.js
-3. Open browser:
-    http://localhost:8000/ to view movie gallery
-
-API available via same port
-
-## Built With
-
-Node.js
-Express.js
-HTML + CSS (Vanilla frontend)
-Postman (for testing)
-
-## Notes
-- Movies and users are stored in-memory (no DB).
-- This is a backend project prepared for future MongoDB integration.
-
-# Movie App Database – SQL Task
-
-## Contents of this submission:
-
-1. part1_db.sql  
-   → SQL script to drop, create and populate the database with:
-   - Genres, Directors, Movies, Users, User-Movie (favorites) relationships
-   - At least 10 movies, 3 directors, 3 genres, 3 users, 3 favorites
-
-2. parte2_queries.sql  
-   → SQL queries for:
-   - Selecting a genre and its related movies
-   - Updating a user’s email
-   - Deleting a movie (with checks before and after)
-
-3. Screenshots (PNG)  
-   → Query results for each required operation in Part 2:
-   - SELECT (genre and movies)
-   - UPDATE (user email)
-   - DELETE (with before/after checks)
-
-## Notes:
-- The database has been tested in pgAdmin without errors.
-- Data used is fictional and aligned with the project brief requirements.
-
 
 ## Author
 
-Marco Esu
+Marco Esu – 2025  
+This project was completed as part of the Full-Stack Web Development Career Path.

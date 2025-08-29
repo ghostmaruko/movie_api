@@ -1,0 +1,52 @@
+roject Reflection &
+Portfolio Entry
+
+📘 Project Overview
+movie_api is a RESTful API built using Node.js, Express, and MongoDB. It allows users to
+retrieve and manage information about movies, directors, and genres, as well as register,
+update profiles, and maintain a list of favorite movies. The API includes authentication,
+validation, password hashing, CORS, and is deployed on Heroku with a MongoDB Atlas
+database.
+
+📘📘 My Role and Responsibilities
+I was responsible for the entire backend development of the project. My tasks included:
+- Designing and implementing all REST API endpoints
+- Integrating MongoDB with Mongoose models
+- Implementing user authentication with JWT and Passport
+- Hashing passwords securely with bcrypt
+- Adding data validation using express-validator
+- Enabling CORS to allow API access
+- Connecting the app to MongoDB Atlas and deploying on Heroku
+- Testing all endpoints with Postman and documenting the API in HTML format
+
+📘 Challenges & Solutions
+- Heroku file case-sensitivity issue: resolved with proper Git renaming workflow
+- Password security: ensured hashing before storing and comparing securely on login
+- Validation: implemented robust request validation for user creation and updates
+
+📘 Lessons Learned
+- Learned full-stack integration techniques (MongoDB Atlas + Heroku)
+- Improved problem-solving with Git and deployment issues
+- Gained a deeper understanding of JWT-based authentication and secure password
+practices
+
+📘 Project Links
+• Live Heroku App: https://movie-api-2025-9f90ce074c45.herokuapp.com/
+• GitHub Repository: https://github.com/your-username/movie_api
+
+📘 Tech Stack
+- Node.js + Express
+- MongoDB Atlas + Mongoose
+- JWT, Passport.js
+- express-validator
+- bcrypt, CORS
+- Postman
+- Heroku
+
+📘 Screenshots & Deliverables
+Include screenshots of Postman tests, API responses, and frontend demo. Also include API
+documentation HTML and database seed scripts.
+
+📘 Final Thoughts
+This backend project laid the foundation for my full-stack movie application. The next step
+will be building the client-side using React to complete the MERN stack experience.
