@@ -47,7 +47,9 @@
             card.className = "movie-card";
 
             const img = document.createElement("img");
-            img.src = "/img/" + (movie.imageURL || "placeholder.jpg");
+            /* img.src = "/img/" + (movie.imageURL || "placeholder.jpg"); */
+            img.src = movie.imageURL ? `/img/${movie.imageURL}` : "/img/placeholder.jpg";
+
             img.alt = movie.title;
             img.addEventListener("click", () => showPopup(movie));
 
@@ -62,9 +64,9 @@
         .catch((err) => console.error(err));
 
       function showPopup(movie) {
-        popupImage.src = "/img/" + (movie.imageURL || "placeholder.jpg");
-        popupImage.alt = movie.title || "Movie poster";
-
+        popupImage.src = movie.imageURL
+          ? `/img/${movie.imageURL}`
+          : "/img/placeholder.jpg";
         popupTitle.textContent = movie.title || "N/A";
         popupDescription.textContent = movie.description || "N/A";
         popupGenre.textContent = movie.genre?.name || "N/A";
