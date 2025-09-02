@@ -1,4 +1,3 @@
-
 <!DOCTYPE html>
 <html lang="en">
   <head>
@@ -15,24 +14,45 @@
         border-collapse: collapse;
         margin-bottom: 30px;
       }
-      table, th, td {
+      table,
+      th,
+      td {
         border: 1px solid #ccc;
       }
-      th, td {
+      th,
+      td {
         padding: 10px;
         text-align: left;
+        vertical-align: top;
       }
       th {
         background-color: #f4f4f4;
       }
-      h1, h2 {
+      h1,
+      h2 {
         color: #333;
+      }
+      code {
+        background-color: #f4f4f4;
+        padding: 2px 4px;
+        border-radius: 4px;
       }
     </style>
   </head>
   <body>
     <h1>Movie API Documentation</h1>
-    <p>This API allows users to retrieve movie data, register and manage accounts, and manage favorite movies.</p>
+    <p>
+      This API allows users to retrieve movie data, register and manage user
+      accounts, and manage favorite movies. Most endpoints require JWT
+      authentication.
+    </p>
+
+    <h2>Authentication</h2>
+    <p>
+      After logging in, include your token in the
+      <code>Authorization</code> header using the format:<br />
+      <code>Bearer &lt;your_token&gt;</code>
+    </p>
 
     <h2>Endpoints</h2>
     <table>
@@ -41,7 +61,77 @@
         <th>URL</th>
         <th>Description</th>
         <th>Request Body</th>
+        <th>Requires Auth</th>
         <th>Response Example</th>
+      </tr>
+
+      <tr>
+        <td>POST</td>
+        <td>/users</td>
+        <td>Registers a new user</td>
+        <td>
+          { "Username": "marco", "Password": "12345", "Email":
+          "email@example.com" }
+        </td>
+        <td>No</td>
+        <td>{ "Username": "marco", "Email": "email@example.com", ... }</td>
+      </tr>
+
+      <tr>
+        <td>POST</td>
+        <td>/login</td>
+        <td>Logs in a user and returns a JWT token</td>
+        <td>{ "Username": "marco", "Password": "12345" }</td>
+        <td>No</td>
+        <td>{ "token": "eyJhbGciOiJIUzI1..." }</td>
+      </tr>
+
+      <tr>
+        <td>GET</td>
+        <td>/users/:Username</td>
+        <td>Gets user profile data</td>
+        <td>None</td>
+        <td>Yes</td>
+        <td>{ "Username": "marco", "Email": "email@example.com", ... }</td>
+      </tr>
+
+      <tr>
+        <td>PUT</td>
+        <td>/users/:Username</td>
+        <td>Updates user data</td>
+        <td>
+          { "Username": "marco2", "Password": "67890", "Email":
+          "new@example.com" }
+        </td>
+        <td>Yes</td>
+        <td>{ "message": "User updated" }</td>
+      </tr>
+
+      <tr>
+        <td>DELETE</td>
+        <td>/users/:Username</td>
+        <td>Deletes a user account</td>
+        <td>None</td>
+        <td>Yes</td>
+        <td>{ "message": "User marco has been removed" }</td>
+      </tr>
+
+      <tr>
+        <td>POST</td>
+        <td>/users/:Username/movies/:MovieID</td>
+        <td>Adds a movie to user's favorites</td>
+        <td>None</td>
+        <td>Yes</td>
+        <td>{ "message": "Movie added to favorites" }</td>
+      </tr>
+
+      <tr>
+        <td>DELETE</td>
+        <td>/users/:Username/movies/:MovieID</td>
+        <td>Removes a movie from user's favorites</td>
+        <td>None</td>
+        <td>Yes</td>
+        <td>{ "message": "Movie removed from favorites" }</td>
       </tr>
 
       <tr>
@@ -49,88 +139,52 @@
         <td>/movies</td>
         <td>Returns a list of all movies</td>
         <td>None</td>
+        <td>Yes</td>
         <td>
-          [ { "Title": "The Lord of the Rings", "Year": 2001, ... }, ... ]
+          [ { "Title": "Inception", "Genre": { "Name": "Sci-Fi" }, ... }, ... ]
         </td>
       </tr>
 
       <tr>
         <td>GET</td>
-        <td>/movies/:title</td>
+        <td>/movies/:Title</td>
         <td>Returns data about a single movie by title</td>
         <td>None</td>
+        <td>Yes</td>
+        <td>{ "Title": "Inception", "Director": { "Name": "Nolan" }, ... }</td>
+      </tr>
+
+      <tr>
+        <td>GET</td>
+        <td>/genres/:Name</td>
+        <td>Returns the description of a genre by name</td>
+        <td>None</td>
+        <td>Yes</td>
         <td>
-          { "Title": "The Lord of the Rings", "Year": 2001, ... }
+          { "Name": "Sci-Fi", "Description": "Science fiction stories..." }
         </td>
       </tr>
 
       <tr>
         <td>GET</td>
-        <td>/genres/:name</td>
-        <td>Returns the description of a genre by name</td>
-        <td>None</td>
-        <td>{ "Genre": "Sci-Fi", "Description": "A hacker discovers..." }</td>
-      </tr>
-
-      <tr>
-        <td>GET</td>
-        <td>/directors/:name</td>
+        <td>/directors/:Name</td>
         <td>Returns director details by name</td>
         <td>None</td>
+        <td>Yes</td>
         <td>{ "Name": "Christopher Nolan", "Bio": "...", "Birth": 1970 }</td>
-      </tr>
-
-      <tr>
-        <td>POST</td>
-        <td>/users</td>
-        <td>Registers a new user</td>
-        <td>{ "Username": "marco", "Password": "12345", "Email": "email@example.com" }</td>
-        <td>User marco registered</td>
-      </tr>
-
-      <tr>
-        <td>PUT</td>
-        <td>/users/:username</td>
-        <td>Updates the user data</td>
-        <td>{ "Username": "marco2", "Password": "67890", "Email": "new@example.com" }</td>
-        <td>User updated</td>
-      </tr>
-
-      <tr>
-        <td>POST</td>
-        <td>/users/:username/movies/:movieID</td>
-        <td>Adds a movie to user's favorites</td>
-        <td>None</td>
-        <td>Movie Inception added to marco's favorites</td>
-      </tr>
-
-      <tr>
-        <td>DELETE</td>
-        <td>/users/:username/movies/:movieID</td>
-        <td>Removes a movie from user's favorites</td>
-        <td>None</td>
-        <td>Movie removed from marco's favorites</td>
-      </tr>
-
-      <tr>
-        <td>DELETE</td>
-        <td>/users/:username</td>
-        <td>Deletes a user account</td>
-        <td>None</td>
-        <td>User marco has been removed</td>
       </tr>
     </table>
 
     <h2>Notes</h2>
     <ul>
-      <li>All responses are in JSON format unless otherwise specified.</li>
+      <li>All responses are in JSON format.</li>
       <li>
-        The <code>ImagePath</code> field points to files in the <code>/public/img</code> folder.
+        For POST and PUT requests, set <strong>Content-Type</strong> to
+        <code>application/json</code>.
       </li>
-      <li>
-        For POST and PUT requests, set <strong>Content-Type</strong> to <code>application/json</code>.
-      </li>
-      <li>Movie fields include: <code>Title</code>, <code>Description</code>, <code>Genre</code>, <code>Director</code>, <code>Year</code>, <code>Actors</code>, <code>ImagePath</code>, <code>Featured</code>.</li>
+      <li>All user passwords are securely hashed using bcrypt.</li>
+      <li>Validation is enforced on user registration and profile updates.</li>
+      <li>Protected routes require a valid JWT token.</li>
     </ul>
   </body>
 </html>

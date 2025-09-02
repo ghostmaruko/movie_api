@@ -27,16 +27,18 @@ const { check, validationResult } = require("express-validator");
 // =================== CORS ===================
 const cors = require("cors");
 let allowedOrigins = ["http://localhost:8080", "http://mio-frontend.com"];
-app.use(cors({
-  origin: (origin, callback) => {
-    if (!origin) return callback(null, true);
-    if (allowedOrigins.indexOf(origin) === -1) {
-      let message = `The CORS policy for this application doesn't allow access from origin ${origin}.`;
-      return callback(new Error(message), false);
-    }
-    return callback(null, true);
-  }
-}));
+app.use(
+  cors({
+    origin: (origin, callback) => {
+      if (!origin) return callback(null, true);
+      if (allowedOrigins.indexOf(origin) === -1) {
+        let message = `The CORS policy for this application doesn't allow access from origin ${origin}.`;
+        return callback(new Error(message), false);
+      }
+      return callback(null, true);
+    },
+  })
+);
 
 // =================== MIDDLEWARE ===================
 app.use(express.json());
@@ -50,7 +52,7 @@ require("./auth")(app);
 // =================== ROUTES ===================
 
 // ===== 1. Registrazione nuovo utente (pubblica) =====
-app.post(
+/* app.post(
   "/users",
   [
     check("Username", "Username is required").isLength({ min: 5 }),
@@ -73,6 +75,43 @@ app.post(
         Password: hashedPassword,
         Email: req.body.Email,
         Birthday: req.body.Birthday,
+      });
+
+      res.status(201).json(newUser);
+    } catch (error) {
+      console.error(error);
+      res.status(500).send("Error: " + error);
+    }
+  }
+); */
+app.post(
+  "/users",
+  [
+    check("username", "Username is required").isLength({ min: 5 }),
+    check(
+      "username",
+      "Username contains non alphanumeric characters - not allowed."
+    ).isAlphanumeric(),
+    check("password", "Password is required").not().isEmpty(),
+    check("email", "Email does not appear to be valid").isEmail(),
+  ],
+  async (req, res) => {
+    const errors = validationResult(req);
+    if (!errors.isEmpty())
+      return res.status(422).json({ errors: errors.array() });
+
+    try {
+      const existingUser = await User.findOne({ username: req.body.username });
+      if (existingUser)
+        return res.status(400).send(`${req.body.username} already exists`);
+
+      const hashedPassword = await bcrypt.hash(req.body.password, 10);
+
+      const newUser = await User.create({
+        username: req.body.username,
+        password: hashedPassword,
+        email: req.body.email,
+        birthday: req.body.birthday,
       });
 
       res.status(201).json(newUser);
@@ -139,7 +178,7 @@ app.get(
 );
 
 // ===== 6. Aggiorna utente (protetto + verifica identità) =====
-app.put(
+/* app.put(
   "/users/:Username",
   passport.authenticate("jwt", { session: false }),
   async (req, res) => {
@@ -163,13 +202,39 @@ app.put(
       res.status(500).send("Error: " + err);
     }
   }
+); */
+app.put(
+  "/users/:username",
+  passport.authenticate("jwt", { session: false }),
+  async (req, res) => {
+    if (req.user.username !== req.params.username) {
+      return res.status(400).send("Permission denied");
+    }
+
+    try {
+      if (req.body.password) {
+        req.body.password = await bcrypt.hash(req.body.password, 10);
+      }
+
+      const updatedUser = await User.findOneAndUpdate(
+        { username: req.params.username },
+        { $set: req.body },
+        { new: true }
+      );
+
+      if (!updatedUser) return res.status(404).send("User not found");
+      res.json(updatedUser);
+    } catch (err) {
+      res.status(500).send("Error: " + err);
+    }
+  }
 );
 
 // ===== 7. Aggiungi film ai preferiti (protetto + verifica) =====
 const { ObjectId } = require("mongoose").Types;
 
 // ===== 7. Aggiungi film ai preferiti (protetto + verifica) =====
-app.post(
+/* app.post(
   "/users/:Username/movies/:MovieID",
   passport.authenticate("jwt", { session: false }),
   async (req, res) => {
@@ -188,10 +253,30 @@ app.post(
       res.status(500).send("Error: " + err);
     }
   }
+); */
+app.post(
+  "/users/:username/movies/:MovieID",
+  passport.authenticate("jwt", { session: false }),
+  async (req, res) => {
+    if (req.user.username !== req.params.username)
+      return res.status(400).send("Permission denied");
+
+    try {
+      const updatedUser = await User.findOneAndUpdate(
+        { username: req.params.username },
+        { $addToSet: { favoriteMovies: new ObjectId(req.params.MovieID) } },
+        { new: true }
+      );
+      if (!updatedUser) return res.status(404).send("User not found");
+      res.json(updatedUser);
+    } catch (err) {
+      res.status(500).send("Error: " + err);
+    }
+  }
 );
 
 // ===== 8. Rimuovi film dai preferiti (protetto + verifica) =====
-app.delete(
+/* app.delete(
   "/users/:Username/movies/:MovieID",
   passport.authenticate("jwt", { session: false }),
   async (req, res) => {
@@ -210,10 +295,30 @@ app.delete(
       res.status(500).send("Error: " + err);
     }
   }
+); */
+app.delete(
+  "/users/:username/movies/:MovieID",
+  passport.authenticate("jwt", { session: false }),
+  async (req, res) => {
+    if (req.user.username !== req.params.username)
+      return res.status(400).send("Permission denied");
+
+    try {
+      const updatedUser = await User.findOneAndUpdate(
+        { username: req.params.username },
+        { $pull: { favoriteMovies: req.params.MovieID } },
+        { new: true }
+      );
+      if (!updatedUser) return res.status(404).send("User not found");
+      res.json(updatedUser);
+    } catch (err) {
+      res.status(500).send("Error: " + err);
+    }
+  }
 );
 
 // ===== 9. Cancella utente (protetto + verifica) =====
-app.delete(
+/* app.delete(
   "/users/:Username",
   passport.authenticate("jwt", { session: false }),
   async (req, res) => {
@@ -230,9 +335,39 @@ app.delete(
       res.status(500).send("Error: " + err);
     }
   }
+); */
+app.delete(
+  "/users/:username",
+  passport.authenticate("jwt", { session: false }),
+  async (req, res) => {
+    if (req.user.username !== req.params.username)
+      return res.status(400).send("Permission denied");
+
+    try {
+      const user = await User.findOneAndRemove({
+        username: req.params.username,
+      });
+      if (!user) return res.status(404).send("User not found");
+      res.send(`${req.params.username} was deleted.`);
+    } catch (err) {
+      res.status(500).send("Error: " + err);
+    }
+  }
 );
 
 // ===== 10. Leggi tutti gli utenti (protetto) =====
+/* app.get(
+  "/users",
+  passport.authenticate("jwt", { session: false }),
+  async (req, res) => {
+    try {
+      const users = await User.find();
+      res.json(users);
+    } catch (err) {
+      res.status(500).send("Error: " + err);
+    }
+  }
+); */
 app.get(
   "/users",
   passport.authenticate("jwt", { session: false }),
@@ -247,7 +382,7 @@ app.get(
 );
 
 // ===== 11. Leggi utente specifico (protetto + verifica) =====
-app.get(
+/* app.get(
   "/users/:Username",
   passport.authenticate("jwt", { session: false }),
   async (req, res) => {
@@ -256,6 +391,22 @@ app.get(
 
     try {
       const user = await User.findOne({ Username: req.params.Username });
+      if (!user) return res.status(404).send("User not found");
+      res.json(user);
+    } catch (err) {
+      res.status(500).send("Error: " + err);
+    }
+  }
+); */
+app.get(
+  "/users/:username",
+  passport.authenticate("jwt", { session: false }),
+  async (req, res) => {
+    if (req.user.username !== req.params.username)
+      return res.status(400).send("Permission denied");
+
+    try {
+      const user = await User.findOne({ username: req.params.username });
       if (!user) return res.status(404).send("User not found");
       res.json(user);
     } catch (err) {
