@@ -1,4 +1,3 @@
-
 # Movie API Project
 
 A complete REST API built with Node.js, Express, and MongoDB that allows users to manage movie information, user accounts, and favorite movies. Includes a minimal frontend interface to display the movies in a responsive gallery with popup details.
@@ -7,10 +6,10 @@ A complete REST API built with Node.js, Express, and MongoDB that allows users t
 
 ## Live Links
 
-- 🟢 **Live App**: https://movie-api-2025-9f90ce074c45.herokuapp.com/
-- 🧠 **API Docs**: https://movie-api-2025-9f90ce074c45.herokuapp.com/documentation.html
+- 🟢 **Live App**: [https://movie-api-2025-9f90ce074c45.herokuapp.com/](https://movie-api-2025-9f90ce074c45.herokuapp.com/)
+- 🧠 **API Docs**: [https://movie-api-2025-9f90ce074c45.herokuapp.com/documentation.html](https://movie-api-2025-9f90ce074c45.herokuapp.com/documentation.html)
 - 🧪 **Postman Collection**: Included in project files
-- 🗂️ **GitHub Repo**: https://github.com/ghostmaruko/movie_api
+- 🗂️ **GitHub Repo**: [https://github.com/ghostmaruko/movie_api](https://github.com/ghostmaruko/movie_api)
 
 ---
 
@@ -23,15 +22,16 @@ A complete REST API built with Node.js, Express, and MongoDB that allows users t
 - `GET /genres/:name` — Returns genre description
 - `GET /directors/:name` — Returns director info
 - `POST /users` — Registers a new user
+- `POST /login` — User login, returns JWT
 - `PUT /users/:username` — Updates user info
-- `POST /users/:username/movies/:movieID` — Add to favorites
-- `DELETE /users/:username/movies/:movieID` — Remove from favorites
+- `POST /users/:username/movies/:movieID` — Add a movie to favorites
+- `DELETE /users/:username/movies/:movieID` — Remove a movie from favorites
 - `DELETE /users/:username` — Delete user account
 
-🔐 Authentication: All routes (except POST /users and /login) require JWT authentication.  
-🛡️ Authorization: Passport.js with HTTP Basic and JWT strategies.  
-🔐 Passwords are hashed using bcrypt.  
-🧪 All endpoints tested in Postman.
+**Authentication:** All routes (except `POST /users` and `POST /login`) require JWT authentication.  
+**Authorization:** Passport.js with Local and JWT strategies.  
+**Passwords** are hashed using bcrypt.  
+All endpoints tested in Postman.
 
 ---
 
@@ -50,16 +50,18 @@ movie_api/
 ├── index.js
 ├── package.json
 ├── moongose/
-│   └── model.js
+│ └── model.js
 ├── public/
-│   ├── index.html
-│   ├── movies.html
-│   ├── documentation.html
-│   ├── style.css
-│   └── img/ (movie posters)
+│ ├── index.html
+│ ├── movies.html
+│ ├── documentation.html
+│ ├── style.css
+│ └── img/ (movie posters)
 ├── movie_api_postman_collection.json
 ├── log.txt
 └── screenshots/ (Postman test results)
+
+---
 
 ---
 
@@ -67,7 +69,9 @@ movie_api/
 
 ✅ MongoDB Atlas connected via Mongoose  
 ✅ Environment variables used (`CONNECTION_URI`, `PORT`)  
-✅ App deployed to Heroku
+✅ App deployed to Heroku  
+✅ CORS enabled for all origins  
+✅ All endpoints fully tested and verified
 
 ---
 
@@ -87,18 +91,15 @@ movie_api/
 
 ## Development Notes
 
-- CORS implemented to allow all origins
 - Password hashing applied on registration and login
 - Data validation added using `express-validator`
-- MongoDB Atlas used instead of in-memory DB
-- Heroku deployment tested and verified
 - All API features from Achievement 2 and 3 implemented
-- Favicon.ico and broken image issues resolved via path normalization
+- Images served statically with path normalization
+- Postman collection and screenshots included for API testing
+- Documentation updated with full endpoint details and example requests/responses
 
 ---
 
 ## Author
 
-Marco Esu – 2025 
- 
-This project was completed as part of the Full-Stack Web Development Career Path.
+Marco Esu – 2025
