@@ -48,7 +48,8 @@ All endpoints tested in Postman.
 
 ## Frontend (Static UI)
 
-Served via Express using static middleware.
+Served via Express using static middleware. 
+(Note: This achievement focuses on the backend; protected routes require JWT and should be tested via Postman.)
 
 - `/` → Responsive movie gallery with grid and popup modals
 - `/movies-list` → Alternative static layout
