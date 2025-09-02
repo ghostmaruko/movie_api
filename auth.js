@@ -12,12 +12,12 @@ module.exports = (app) => {
     return jwt.sign(
       {
         _id: user._id,
-        Username: user.Username,
-        Email: user.Email,
+        username: user.username,
+        email: user.email,
       },
       JWT_SECRET,
       {
-        subject: user.Username,
+        subject: user.username,
         expiresIn: "7d",
         algorithm: "HS256",
       }
@@ -28,7 +28,9 @@ module.exports = (app) => {
   router.post("/", (req, res) => {
     passport.authenticate("local", { session: false }, (error, user, info) => {
       if (error || !user) {
-        return res.status(400).json({ message: "Incorrect username or password.", user: user });
+        return res
+          .status(400)
+          .json({ message: "Incorrect username or password.", user: user });
       }
 
       req.login(user, { session: false }, (error) => {

@@ -38,7 +38,7 @@ passport.use(
       passwordField: "password",
     },
     (username, password, done) => {
-      User.findOne({ username: username }, (err, user) => {
+      Users.findOne({ username: username }, (err, user) => {
         if (err) return done(err);
         if (!user) return done(null, false, { message: "Incorrect username." });
 
