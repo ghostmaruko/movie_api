@@ -48,11 +48,12 @@ All endpoints tested in Postman.
 
 ## Frontend (Static UI)
 
-Served via Express using static middleware. 
-(Note: This achievement focuses on the backend; protected routes require JWT and should be tested via Postman.)
+Served via Express using static middleware.
 
 - `/` → Responsive movie gallery with grid and popup modals
 - `/movies-list` → Alternative static layout
+
+⚠️ Note: All API endpoints (e.g., `/users`, `/movies/:title`) require JWT authentication. Accessing them directly via browser will result in "Unauthorized". Use Postman or another API client with a valid JWT token to test the backend.
 
 ---
 
@@ -81,7 +82,8 @@ movie_api/
 
 ## Example endpoints
 
-##  Endpoint	                                Method	                Notes
+## Endpoint Method Notes
+
     /users	                                    POST	                Register a new user
     /login	                                    POST	                Login to get JWT
     /movies	                                    GET	                    Returns all movies (requires JWT)
