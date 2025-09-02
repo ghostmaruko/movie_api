@@ -1,57 +1,40 @@
 const passport = require("passport");
 const LocalStrategy = require("passport-local").Strategy;
 const passportJWT = require("passport-jwt");
-const Models = require("./moongose/model.js");
 const bcrypt = require("bcryptjs");
+const { User } = require("./moongose/model.js"); // Usa User, non Users
 
-const Users = Models.User;
 const JWTStrategy = passportJWT.Strategy;
 const ExtractJWT = passportJWT.ExtractJwt;
 
 // Chiave segreta condivisa
 const JWT_SECRET = "your_jwt_secret";
 
-// ===== Local Strategy =====
-/* passport.use(
-  new LocalStrategy(
-    { usernameField: "Username", passwordField: "Password" },
-    async (username, password, done) => {
-      try {
-        const user = await Users.findOne({ Username: username });
-        if (!user) return done(null, false, { message: "Incorrect username or password." });
-
-        const isValid = await bcrypt.compare(password, user.Password);
-        if (!isValid) return done(null, false, { message: "Incorrect username or password." });
-
-        return done(null, user);
-      } catch (error) {
-        return done(error);
-      }
-    }
-  )
-); */
-
+// ===== Local Strategy (login username/password) =====
 passport.use(
   new LocalStrategy(
     {
-      usernameField: "username",
+      usernameField: "username", // deve corrispondere al JSON inviato da Postman
       passwordField: "password",
     },
-    (username, password, done) => {
-      Users.findOne({ username: username }, (err, user) => {
-        if (err) return done(err);
+    async (username, password, done) => {
+      try {
+        const user = await User.findOne({ username: username });
         if (!user) return done(null, false, { message: "Incorrect username." });
 
-        if (!user.validatePassword(password))
+        const isValid = await bcrypt.compare(password, user.password);
+        if (!isValid)
           return done(null, false, { message: "Incorrect password." });
 
         return done(null, user);
-      });
+      } catch (err) {
+        return done(err);
+      }
     }
   )
 );
 
-// ===== JWT Strategy =====
+// ===== JWT Strategy (autenticazione token) =====
 passport.use(
   new JWTStrategy(
     {
@@ -60,7 +43,7 @@ passport.use(
     },
     async (jwtPayload, done) => {
       try {
-        const user = await Users.findById(jwtPayload._id);
+        const user = await User.findById(jwtPayload._id);
         if (user) return done(null, user);
         return done(null, false);
       } catch (err) {
