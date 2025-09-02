@@ -1,4 +1,4 @@
-# Movie API Project
+## Movie API Project
 
 A complete REST API built with Node.js, Express, and MongoDB that allows users to manage movie information, user accounts, and favorite movies. Includes a minimal frontend interface to display the movies in a responsive gallery with popup details.
 
@@ -6,27 +6,38 @@ A complete REST API built with Node.js, Express, and MongoDB that allows users t
 
 ## Live Links
 
-- 🟢 **Live App**: [https://movie-api-2025-9f90ce074c45.herokuapp.com/](https://movie-api-2025-9f90ce074c45.herokuapp.com/)
-- 🧠 **API Docs**: [https://movie-api-2025-9f90ce074c45.herokuapp.com/documentation.html](https://movie-api-2025-9f90ce074c45.herokuapp.com/documentation.html)
-- 🧪 **Postman Collection**: Included in project files
-- 🗂️ **GitHub Repo**: [https://github.com/ghostmaruko/movie_api](https://github.com/ghostmaruko/movie_api)
+- **Live App (frontend + backend)**: https://movie-api-2025-9f90ce074c45.herokuapp.com/
+- **API Docs**: https://movie-api-2025-9f90ce074c45.herokuapp.com/documentation.html
+- **Postman Collection**: Included in project files (`postman_req` folder)
+- **GitHub Repo**: https://github.com/ghostmaruko/movie_api
 
----
+### Backend Endpoints (JWT required for most requests)
 
-## Features
+- `POST /users` — Register a new user (no token required)  
+  `https://movie-api-2025-9f90ce074c45.herokuapp.com/users`
 
-### Backend API Endpoints
+- `POST /login` — Login to get JWT token  
+  `https://movie-api-2025-9f90ce074c45.herokuapp.com/login`
 
-- `GET /movies` — Returns all movies
-- `GET /movies/:title` — Returns a movie by title
-- `GET /genres/:name` — Returns genre description
-- `GET /directors/:name` — Returns director info
-- `POST /users` — Registers a new user
-- `POST /login` — User login, returns JWT
-- `PUT /users/:username` — Updates user info
-- `POST /users/:username/movies/:movieID` — Add a movie to favorites
-- `DELETE /users/:username/movies/:movieID` — Remove a movie from favorites
-- `DELETE /users/:username` — Delete user account
+- `GET /movies` — List all movies (requires JWT)  
+  `https://movie-api-2025-9f90ce074c45.herokuapp.com/movies`
+
+- `GET /movies/:title` — Get movie by title (requires JWT)  
+  `https://movie-api-2025-9f90ce074c45.herokuapp.com/movies/Inception`
+
+- `GET /genres/:name` — Get genre info (requires JWT)  
+  `https://movie-api-2025-9f90ce074c45.herokuapp.com/genres/Action`
+
+- `GET /directors/:name` — Get director info (requires JWT)  
+  `https://movie-api-2025-9f90ce074c45.herokuapp.com/directors/Christopher%20Nolan`
+
+- `POST /users/:username/movies/:movieID` — Add movie to favorites (requires JWT)
+
+- `DELETE /users/:username/movies/:movieID` — Remove movie from favorites (requires JWT)
+
+- `PUT /users/:username` — Update user info (requires JWT)
+
+- `DELETE /users/:username` — Delete user (requires JWT)
 
 **Authentication:** All routes (except `POST /users` and `POST /login`) require JWT authentication.  
 **Authorization:** Passport.js with Local and JWT strategies.  
@@ -63,6 +74,29 @@ movie_api/
 
 ---
 
+## Notes on Testing the Backend
+
+⚠️ Important: All protected API endpoints require a JWT token. You cannot directly test them via a browser. Use Postman (or another HTTP client) with the token to access routes like /users, /movies/:title, etc.
+
+## Example endpoints
+
+##  Endpoint	                                Method	                Notes
+    /users	                                    POST	                Register a new user
+    /login	                                    POST	                Login to get JWT
+    /movies	                                    GET	                    Returns all movies (requires JWT)
+    /movies/:title	                            GET	                    Returns a movie by title (requires JWT)
+    /users/:username/movies/:movieID	        POST / DELETE	        Add/remove favorites (requires JWT)
+
+## Testing steps:
+
+Register a user via POST /users.
+
+Login via POST /login to receive a JWT token.
+
+In Postman, set Authorization → Bearer Token with the received JWT.
+
+Test protected endpoints like /users, /movies, /users/:username/movies/:movieID.
+
 ---
 
 ## Deployment
@@ -86,6 +120,16 @@ movie_api/
 - CORS
 - Morgan
 - Postman
+
+---
+
+## Screenshots & Postman
+
+All API requests tested in Postman.
+
+Screenshots of successful requests are included in the screenshots/ folder.
+
+Full Postman collection is included in postman_req/ for direct import.
 
 ---
 
