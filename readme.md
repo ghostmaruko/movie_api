@@ -19,8 +19,10 @@ A complete REST API built with Node.js, Express, and MongoDB that allows users t
 - `POST /login` — Login to get JWT token  
   `https://movie-api-2025-9f90ce074c45.herokuapp.com/login`
 
-- `GET /movies` — List all movies (requires JWT)  
-  `https://movie-api-2025-9f90ce074c45.herokuapp.com/movies`
+- `GET /movies` — List all movies (**temporarily public**)  
+   `https://movie-api-2025-9f90ce074c45.herokuapp.com/movies`
+   This endpoint has temporarily been made public to allow unauthenticated access from the React frontend during development.  
+  It will be re-protected with JWT in the production version.
 
 - `GET /movies/:title` — Get movie by title (requires JWT)  
   `https://movie-api-2025-9f90ce074c45.herokuapp.com/movies/Inception`
@@ -46,14 +48,15 @@ All endpoints tested in Postman.
 
 ---
 
-## Frontend (Static UI)
+## Frontend
 
-Served via Express using static middleware.
+⚠️ **Note:** This project no longer includes a frontend served via Express.  
+The frontend has been moved to a separate project built with **React**:  
+[myFlix-client (React Frontend)](https://github.com/ghostmaruko/myFlix_client)
 
-- `/` → Responsive movie gallery with grid and popup modals
-- `/movies-list` → Alternative static layout
+All API endpoints (e.g., `/users`, `/movies`) are now **exclusively accessed by the frontend React app** or API clients (e.g., Postman, curl).
 
-⚠️ Note: All API endpoints (e.g., `/users`, `/movies/:title`) require JWT authentication. Accessing them directly via browser will result in "Unauthorized". Use Postman or another API client with a valid JWT token to test the backend.
+To test the backend manually, use Postman with a valid JWT token.
 
 ---
 
