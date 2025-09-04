@@ -1,5 +1,12 @@
 node_modules/
 test.js
 file.env
-login.html
 server.js
+/public/login.html
+/public/index.html
+/public/movies.html
+/public/*.css
+*.png
+/public/img
+/screenshots/
+
