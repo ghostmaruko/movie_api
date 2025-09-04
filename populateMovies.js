@@ -2,8 +2,6 @@ const mongoose = require("mongoose");
 const Models = require("./moongose/model.js");
 const Movie = Models.Movie;
 
-const BASE_IMG_URL = "https://movie-api-2025-9f90ce074c45.herokuapp.com/img/";
-
 const movies = [
   {
     title: "The Lord of the Rings",
@@ -12,7 +10,7 @@ const movies = [
     director: { name: "Peter Jackson", bio: "New Zealand filmmaker" },
     year: 2001,
     actors: ["Elijah Wood", "Ian McKellen"],
-    imageURL: BASE_IMG_URL + "lotr.jpg",
+    imageURL: "https://movie-api-2025-9f90ce074c45.herokuapp.com/img/lotr.jpg",
     featured: true,
   },
   {
@@ -22,7 +20,7 @@ const movies = [
     director: { name: "Lana Wachowski", bio: "American director" },
     year: 1999,
     actors: ["Keanu Reeves", "Laurence Fishburne"],
-    imageURL: BASE_IMG_URL + "matrix.jpg",
+    imageURL: "https://movie-api-2025-9f90ce074c45.herokuapp.com/img/matrix.jpg",
     featured: true,
   },
   {
@@ -32,7 +30,7 @@ const movies = [
     director: { name: "Christopher Nolan", bio: "British-American filmmaker" },
     year: 2010,
     actors: ["Leonardo DiCaprio", "Joseph Gordon-Levitt", "Kate Winslet"],
-    imageURL: BASE_IMG_URL + "inception.jpg",
+    imageURL: "https://movie-api-2025-9f90ce074c45.herokuapp.com/img/inception.jpg",
     featured: false,
   },
   {
@@ -42,7 +40,7 @@ const movies = [
     director: { name: "George Lucas", bio: "American filmmaker" },
     year: 1977,
     actors: ["Mark Hamill", "Harrison Ford", "Carrie Fisher"],
-    imageURL: BASE_IMG_URL + "star_wars.jpg",
+    imageURL: "https://movie-api-2025-9f90ce074c45.herokuapp.com/img/star_wars.jpg",
     featured: true,
   },
   {
@@ -50,13 +48,10 @@ const movies = [
     description:
       "A series of interconnected stories set in the criminal underworld of Los Angeles.",
     genre: { name: "Crime", description: "Crime drama." },
-    director: {
-      name: "Quentin Tarantino",
-      bio: "American director and screenwriter",
-    },
+    director: { name: "Quentin Tarantino", bio: "American director and screenwriter" },
     year: 1994,
     actors: ["John Travolta", "Samuel L. Jackson", "Uma Thurman"],
-    imageURL: BASE_IMG_URL + "pulp_fiction.jpg",
+    imageURL: "https://movie-api-2025-9f90ce074c45.herokuapp.com/img/pulp_fiction.jpg",
     featured: false,
   },
   {
@@ -67,18 +62,18 @@ const movies = [
     director: { name: "Francis Ford Coppola", bio: "American filmmaker" },
     year: 1972,
     actors: ["Marlon Brando", "Al Pacino", "James Caan"],
-    imageURL: BASE_IMG_URL + "the_godfather.jpg",
+    imageURL: "https://movie-api-2025-9f90ce074c45.herokuapp.com/img/the_godfather.jpg",
     featured: false,
   },
   {
     title: "Forrest Gump",
     description:
-      "The presidencies of Kennedy and Johnson, the Vietnam War, the Watergate scandal, and other historical events unfold through the perspective of an Alabamaan named Forrest Gump.",
+      "The presidencies of Kennedy and Johnson, the Vietnam War, the Watergate scandal, and other historical events unfold through the perspective of Forrest Gump.",
     genre: { name: "Drama", description: "Drama / Romance" },
     director: { name: "Robert Zemeckis", bio: "American filmmaker" },
     year: 1994,
     actors: ["Tom Hanks", "Robin Wright", "Gary Sinise"],
-    imageURL: BASE_IMG_URL + "forrest_gump.jpg",
+    imageURL: "https://movie-api-2025-9f90ce074c45.herokuapp.com/img/forrest_gump.jpg",
     featured: false,
   },
   {
@@ -89,7 +84,7 @@ const movies = [
     director: { name: "Christopher Nolan", bio: "British-American filmmaker" },
     year: 2008,
     actors: ["Christian Bale", "Heath Ledger", "Aaron Eckhart"],
-    imageURL: BASE_IMG_URL + "the_dark_knight.jpg",
+    imageURL: "https://movie-api-2025-9f90ce074c45.herokuapp.com/img/the_dark_knight.jpg",
     featured: false,
   },
   {
@@ -100,7 +95,7 @@ const movies = [
     director: { name: "Christopher Nolan", bio: "British-American filmmaker" },
     year: 2014,
     actors: ["Matthew McConaughey", "Anne Hathaway", "Jessica Chastain"],
-    imageURL: BASE_IMG_URL + "interstellar.jpg",
+    imageURL: "https://movie-api-2025-9f90ce074c45.herokuapp.com/img/interstellar.jpg",
     featured: false,
   },
   {
@@ -111,7 +106,7 @@ const movies = [
     director: { name: "Ridley Scott", bio: "British filmmaker" },
     year: 2000,
     actors: ["Russell Crowe", "Joaquin Phoenix", "Connie Nielsen"],
-    imageURL: BASE_IMG_URL + "gladiator.jpg",
+    imageURL: "https://movie-api-2025-9f90ce074c45.herokuapp.com/img/gladiator.jpg",
     featured: false,
   },
   {
@@ -122,7 +117,7 @@ const movies = [
     director: { name: "Jonathan Demme", bio: "American filmmaker" },
     year: 1991,
     actors: ["Jodie Foster", "Anthony Hopkins", "Scott Glenn"],
-    imageURL: BASE_IMG_URL + "silence_of_lambs.jpg",
+    imageURL: "https://movie-api-2025-9f90ce074c45.herokuapp.com/img/silence_of_lambs.jpg",
     featured: false,
   },
 ];
