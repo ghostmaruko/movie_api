@@ -6,7 +6,5 @@ server.js
 /public/index.html
 /public/movies.html
 /public/*.css
-*.png
-/public/img
 /screenshots/
 
