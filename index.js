@@ -26,11 +26,15 @@ const { check, validationResult } = require("express-validator");
 
 // =================== CORS ===================
 const cors = require("cors");
-let allowedOrigins = ["http://localhost:8080", "http://mio-frontend.com"];
+let allowedOrigins = [
+  "http://localhost:8080", 
+  "http://localhost:1234", //react dev server
+  "https://movie-api-2025-9f90ce074c45.herokuapp.com", //heroku
+];
 app.use(
   cors({
     origin: (origin, callback) => {
-      if (!origin) return callback(null, true);
+      if (!origin) return callback(null, true); // permette richieste senza origin
       if (allowedOrigins.indexOf(origin) === -1) {
         let message = `The CORS policy for this application doesn't allow access from origin ${origin}.`;
         return callback(new Error(message), false);
@@ -39,6 +43,7 @@ app.use(
     },
   })
 );
+
 
 // =================== MIDDLEWARE ===================
 app.use(express.json());
