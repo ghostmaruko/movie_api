@@ -27,7 +27,7 @@ const { check, validationResult } = require("express-validator");
 // =================== CORS ===================
 const cors = require("cors");
 let allowedOrigins = [
-  "http://localhost:8080", 
+  "http://localhost:8080",
   "http://localhost:1234", //react dev server
   "https://movie-api-2025-9f90ce074c45.herokuapp.com", //heroku
 ];
@@ -43,7 +43,6 @@ app.use(
     },
   })
 );
-
 
 // =================== MIDDLEWARE ===================
 app.use(express.json());
@@ -236,29 +235,6 @@ app.put(
 );
 
 // ===== 7. Aggiungi film ai preferiti (protetto + verifica) =====
-const { ObjectId } = require("mongoose").Types;
-
-// ===== 7. Aggiungi film ai preferiti (protetto + verifica) =====
-/* app.post(
-  "/users/:Username/movies/:MovieID",
-  passport.authenticate("jwt", { session: false }),
-  async (req, res) => {
-    if (req.user.Username !== req.params.Username)
-      return res.status(400).send("Permission denied");
-
-    try {
-      const updatedUser = await User.findOneAndUpdate(
-        { Username: req.params.Username },
-        { $addToSet: { FavoriteMovies: new ObjectId(req.params.MovieID) } },
-        { new: true }
-      );
-      if (!updatedUser) return res.status(404).send("User not found");
-      res.json(updatedUser);
-    } catch (err) {
-      res.status(500).send("Error: " + err);
-    }
-  }
-); */
 app.post(
   "/users/:username/movies/:MovieID",
   passport.authenticate("jwt", { session: false }),
@@ -267,40 +243,22 @@ app.post(
       return res.status(400).send("Permission denied");
 
     try {
+      // Aggiorno l'array favoriteMovies come stringa
       const updatedUser = await User.findOneAndUpdate(
         { username: req.params.username },
-        { $addToSet: { favoriteMovies: new ObjectId(req.params.MovieID) } },
+        { $addToSet: { favoriteMovies: req.params.MovieID } },
         { new: true }
       );
       if (!updatedUser) return res.status(404).send("User not found");
       res.json(updatedUser);
     } catch (err) {
+      console.error(err);
       res.status(500).send("Error: " + err);
     }
   }
 );
 
 // ===== 8. Rimuovi film dai preferiti (protetto + verifica) =====
-/* app.delete(
-  "/users/:Username/movies/:MovieID",
-  passport.authenticate("jwt", { session: false }),
-  async (req, res) => {
-    if (req.user.Username !== req.params.Username)
-      return res.status(400).send("Permission denied");
-
-    try {
-      const updatedUser = await User.findOneAndUpdate(
-        { Username: req.params.Username },
-        { $pull: { FavoriteMovies: req.params.MovieID } },
-        { new: true }
-      );
-      if (!updatedUser) return res.status(404).send("User not found");
-      res.json(updatedUser);
-    } catch (err) {
-      res.status(500).send("Error: " + err);
-    }
-  }
-); */
 app.delete(
   "/users/:username/movies/:MovieID",
   passport.authenticate("jwt", { session: false }),
@@ -317,30 +275,14 @@ app.delete(
       if (!updatedUser) return res.status(404).send("User not found");
       res.json(updatedUser);
     } catch (err) {
+      console.error(err);
       res.status(500).send("Error: " + err);
     }
   }
 );
 
 // ===== 9. Cancella utente (protetto + verifica) =====
-/* app.delete(
-  "/users/:Username",
-  passport.authenticate("jwt", { session: false }),
-  async (req, res) => {
-    if (req.user.Username !== req.params.Username)
-      return res.status(400).send("Permission denied");
 
-    try {
-      const user = await User.findOneAndRemove({
-        Username: req.params.Username,
-      });
-      if (!user) return res.status(404).send("User not found");
-      res.send(`${req.params.Username} was deleted.`);
-    } catch (err) {
-      res.status(500).send("Error: " + err);
-    }
-  }
-); */
 app.delete(
   "/users/:Username",
   passport.authenticate("jwt", { session: false }),
