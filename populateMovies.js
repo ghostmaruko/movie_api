@@ -1,3 +1,4 @@
+require("dotenv").config();
 const mongoose = require("mongoose");
 const Models = require("./moongose/model.js");
 const Movie = Models.Movie;
@@ -124,20 +125,20 @@ const movies = [
 
 async function populate() {
   try {
-    await mongoose.connect("mongodb://localhost:27017/movie_api");
-    console.log("Connected to MongoDB");
+    const dbUri = process.env.CONNECTION_URI || "mongodb://localhost:27017/movie_api";
+    await mongoose.connect(dbUri);
+    console.log("Connected to MongoDB:", dbUri);
 
-    await Movie.deleteMany();
+    await Movie.deleteMany(); // pulisce la collection
     const result = await Movie.insertMany(movies);
-    console.log(`${result.length} movies inserted!`);
 
-    result.forEach((movie) => {
-      console.log(`ID for "${movie.title}": ${movie._id}`);
-    });
+    console.log(`${result.length} movies inserted!`);
+    result.forEach((movie) => console.log(`ID for "${movie.title}": ${movie._id}`));
   } catch (err) {
-    console.error(err);
+    console.error("Error populating movies:", err);
   } finally {
     await mongoose.connection.close();
+    console.log("MongoDB connection closed");
   }
 }
 
